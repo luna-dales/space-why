@@ -1,0 +1,19 @@
+
+# macOS
+.DS_Store
+
+# PlatformIO build files
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# Compiled firmware
+*.elf
+*.hex
+*.bin
+
+# Temporary and backup files
+*.tmp
+*.bak
+*~
+*.log
