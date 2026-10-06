@@ -1,0 +1,8 @@
+Flying Blind design files
+
+V3 source: Flight Computer v1.f3z supplied in the V3 folder.
+TVC source: Flying_Blind_TVC.f3z supplied in the TVC folder.
+The .fsch/.fbrd documents and their embedded .sch/.brd XML files were extracted unchanged from these archives.
+TVC board images and Gerber/drill layers come from the supplied Flying_Blind_TVC_2026-09-27_Y3.zip production package.
+These are design snapshots, not a claim of flight validation.
+LOG007 is a bench/movement recording, not a flight recording.
