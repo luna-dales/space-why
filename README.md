@@ -1,6 +1,10 @@
 
 # Space Why?
 
+[View Luna’s engineering portfolio](https://luna-dales.github.io/space-why/)
+
+The portfolio website was developed with help from AI for writing, code, and layout. It documents completed work, ongoing development, and project contributions.
+
 Space Why? is an aerospace engineering project exploring high-power rocketry, flight computers, flight-data acquisition, thrust-vector control, simulation, testing, and accessible presentation of aerospace data.
 
 ## Project Areas
