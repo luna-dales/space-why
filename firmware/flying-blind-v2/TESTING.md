@@ -25,3 +25,22 @@ One upload was followed by an MPU6050 initialization failure.
 A full power restart restored operation.
 Three subsequent uploads without disconnecting power all initialized
 both sensors successfully. The original failure's cause is unknown.
+
+## Intermittent SCL connection and repair
+Both sensor initialization failures occurred during testing.
+Restoring earlier firmware did not restore MPU6050 communication.
+The original I2C scanner detected only the barometer at 0x77.
+
+Measurements at the MPU6050 module:
+- VCC to GND: 3.3 V
+- SCL to GND: 3.24 V
+- SDA to GND: 3.26 V
+- Continuity across the SCL mounting joint was intermittent.
+
+After resoldering the SCL joint:
+- Continuity became steady.
+- The scanner detected both 0x68 and 0x77.
+- The committed combined-sensor firmware produced readings again.
+
+The first acceleration sample after restoration was unusually low.
+Subsequent samples settled near gravity. Its cause remains unconfirmed.
