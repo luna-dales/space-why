@@ -194,3 +194,23 @@ initialization failure and a USB disconnect/reconnect.
 Startup reliability remains unresolved.
 The card's filesystem date was incorrect; elapsed acquisition
 timestamps were checked independently.
+
+## Accelerometer axis-direction checks
+Observed the following approximate readings while positioning the module:
+
+| Orientation | Dominant acceleration |
+|---|---|
+| Components facing upward | Z positive, about +9.7 m/s² |
+| Components facing downward | Z negative, about -10.2 m/s² |
+| Printed X arrow upward | X positive, about +10.0 m/s² |
+| Printed X arrow downward | X negative, about -9.4 m/s² |
+| Printed Y arrow upward | Y positive, about +9.8 m/s² |
+| Printed Y arrow downward | Y negative, about -9.9 m/s² |
+
+These checks establish axis directions, not calibration accuracy.
+Movement remained visible in several gyro readings.
+Tilt, bias, scale error, and movement have not been separated.
+
+Several orientation checks occurred after the 60-row capture limit.
+Those observations came from Serial Monitor, not the saved session CSV.
+Dedicated stationary calibration recordings remain pending.
