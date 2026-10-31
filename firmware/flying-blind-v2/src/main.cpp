@@ -12,6 +12,9 @@ bool imuReady = false;
 
 uint32_t sampleNumber = 0;
 
+const uint32_t sampleIntervalMs = 1000;
+uint32_t lastSampleMs = 0;
+
 void setup()
 {
     Serial.begin(115200);
@@ -42,10 +45,19 @@ void setup()
 
 void loop()
 {
+    uint32_t nowMs = millis();
+
+    if (nowMs - lastSampleMs < sampleIntervalMs)
+    {
+        return;
+    }
+
+    lastSampleMs = nowMs;
+
     Serial.print("Sample: ");
     Serial.print(sampleNumber++);
     Serial.print(" | Start (ms since boot): ");
-    Serial.println(millis());
+    Serial.println(nowMs);
 
     if (!barometerReady)
     {
@@ -101,5 +113,4 @@ void loop()
     }
 
     Serial.println();
-    delay(1000);
 }
