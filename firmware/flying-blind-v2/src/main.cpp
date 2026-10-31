@@ -1,5 +1,9 @@
 #include <Arduino.h>
 #include <Wire.h>
+#include <MS5611.h>
+
+MS5611 barometer(0x77);
+bool barometerReady = false;
 
 void setup()
 {
@@ -9,32 +13,40 @@ void setup()
     Wire.setSCL(19);
     Wire.begin();
     Wire.setClock(100000);
+
+    barometerReady = barometer.begin();
+
+    if (barometerReady)
+    {
+        // Test alternate pressure calculation for compatible sensors.
+        barometerReady = barometer.reset(1);
+    }
 }
 
 void loop()
 {
-    Serial.println("Flying Blind V2 — I2C scan");
-    int found = 0;
-
-    for (uint8_t address = 1; address < 127; address++)
+    if (!barometerReady)
     {
-        Wire.beginTransmission(address);
-        uint8_t result = Wire.endTransmission();
-
-        if (result == 0)
-        {
-            Serial.print("Device found at 0x");
-            if (address < 16)
-            {
-                Serial.print("0");
-            }
-            Serial.println(address, HEX);
-            found++;
-        }
+        Serial.println("ERROR: Barometer initialization failed.");
+        delay(1000);
+        return;
     }
 
-    Serial.print("Devices found: ");
-    Serial.println(found);
-    Serial.println();
-    delay(3000);
+    int result = barometer.read();
+
+    if (result == MS5611_READ_OK)
+    {
+        Serial.print("Pressure: ");
+        Serial.print(barometer.getPressure(), 2);
+        Serial.print(" mbar | Temperature: ");
+        Serial.print(barometer.getTemperature(), 2);
+        Serial.println(" C");
+    }
+    else
+    {
+        Serial.print("ERROR: Barometer read failed. Code: ");
+        Serial.println(result);
+    }
+
+    delay(1000);
 }
