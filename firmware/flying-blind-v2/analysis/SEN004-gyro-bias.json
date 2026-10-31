@@ -1,0 +1,18 @@
+{
+  "source_file": "SEN004.CSV",
+  "sample_count": 60,
+  "units": "rad/s",
+  "method": "Arithmetic mean of all samples; board assumed stationary",
+  "correction": "corrected = raw - offset",
+  "offsets": {
+    "gx_radps": -0.051916666666666667,
+    "gy_radps": 0.01425,
+    "gz_radps": -0.016633333333333333
+  },
+  "sample_standard_deviations": {
+    "gx_radps": 0.0006454972243679034,
+    "gy_radps": 0.0007729538324626148,
+    "gz_radps": 0.0006880743620304537
+  },
+  "status": "Experimental; independent validation pending"
+}

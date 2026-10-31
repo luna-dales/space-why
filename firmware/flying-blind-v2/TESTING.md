@@ -147,3 +147,24 @@ All samples were retained.
 These are provisional stationary offset estimates.
 Temperature dependence and corrected performance remain untested.
 The recorded temperature is from the barometer, not the IMU.
+
+## Independent gyro-offset validation
+Estimated fixed offsets from warmed-up stationary recording SEN004.CSV.
+Applied that saved profile to independent stationary recording SEN006.CSV.
+
+SEN006 contained 60 samples with 1000 ms intervals.
+Corrected gyro means (rad/s):
+- X: +0.000466667
+- Y: -0.000150000
+- Z: approximately zero
+
+Mean offsets decreased on all axes.
+Subtracting constants did not reduce sample standard deviations.
+All samples and original raw values were retained.
+Temperature dependence and performance during movement remain untested.
+
+Reproduce:
+python analysis/apply_gyro_bias.py data/SEN006.CSV analysis/SEN004-gyro-bias.json
+
+Derived data: analysis/SEN006-gyro-corrected.csv
+The script refuses to overwrite an existing derived file.
