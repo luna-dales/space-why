@@ -214,3 +214,24 @@ Tilt, bias, scale error, and movement have not been separated.
 Several orientation checks occurred after the 60-row capture limit.
 Those observations came from Serial Monitor, not the saved session CSV.
 Dedicated stationary calibration recordings remain pending.
+
+## Gyroscope rotation-direction checks
+For each axis, its positive direction was pointed upward.
+Looking down along that positive axis toward the module:
+- Counterclockwise rotation produced positive corrected angular velocity.
+- Clockwise rotation produced negative corrected angular velocity.
+
+Observed turn samples:
+- Positive Z: 382–387
+- Negative Z: 427–431
+- Positive X: 484–486
+- Negative X: 517–518
+- Positive Y: 552–555
+- Negative Y: 582–584
+
+These were manual direction checks at 1 Hz, not angular-rate
+or angle-accuracy calibration. Repositioning caused motion on other axes.
+Observations came from Serial Monitor after the CSV capture limit.
+
+Two barometer read failures appeared in earlier console excerpts.
+Their cause remains unresolved.
