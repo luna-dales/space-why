@@ -1,0 +1,24 @@
+File: SEN002.CSV
+Rows: 60
+Columns: 10
+Sample range: 0 to 59
+Consecutive sample numbers: True
+Strictly increasing timestamps: True
+Interval min / mean / max (ms): 1000.000 / 1000.000 / 1000.000
+First-to-last sample span (s): 59.000
+
+Measurement,mean,sample_stddev,min,max
+pressure_mbar,1005.116000,0.114392,1004.900000,1005.420000
+temperature_c,26.189833,0.026005,26.150000,26.240000
+ax_mps2,0.057600,0.020998,0.014000,0.103000
+ay_mps2,-2.342033,0.024491,-2.380000,-2.289000
+az_mps2,9.385983,0.019723,9.340000,9.438000
+gx_radps,-0.051567,0.001691,-0.055000,-0.041000
+gy_radps,0.013767,0.002746,-0.005000,0.017000
+gz_radps,-0.016817,0.000892,-0.018000,-0.013000
+
+Mean acceleration magnitude (m/s^2): 9.673996
+
+All samples retained. No calibration corrections applied.
+Variation includes noise, drift, and any actual movement.
+Gyro means estimate offsets only if the board was stationary.

@@ -11,7 +11,7 @@ Adafruit_MPU6050 imu;
 
 const uint8_t sdChipSelect = 10;
 const uint32_t sampleIntervalMs = 1000;
-const uint32_t captureLimit = 10;
+const uint32_t captureLimit = 60;
 
 bool barometerReady = false;
 bool imuReady = false;

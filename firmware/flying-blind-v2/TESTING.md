@@ -98,3 +98,24 @@ Measurements are uncalibrated and acquired sequentially.
 The first acceleration sample differed from subsequent stationary samples;
 its cause remains unconfirmed.
 Intermittent MPU6050 communication remains an unresolved reliability issue.
+
+## 60-sample recording and repeatable analysis
+Recorded SEN002.CSV with a capture limit of 60 samples.
+Analysis verified:
+- 60 rows and 10 numeric columns.
+- Consecutive samples 0–59.
+- All 59 timestamp intervals were 1000 ms.
+- First-to-last sample span was 59 seconds.
+- Mean pressure: 1005.116 mbar.
+- Pressure sample standard deviation: 0.114392 mbar.
+- Mean acceleration magnitude: 9.673996 m/s².
+
+All samples were retained, including the gyro deviation at sample 20.
+The cause of that deviation is unconfirmed.
+Gyro averages are provisional offset estimates if the board was stationary.
+This test does not establish absolute sensor accuracy.
+
+Reproduce:
+python3 analysis/analyze_csv.py data/SEN002.CSV
+
+Saved report: analysis/SEN002-summary.txt
