@@ -119,3 +119,13 @@ Reproduce:
 python3 analysis/analyze_csv.py data/SEN002.CSV
 
 Saved report: analysis/SEN002-summary.txt
+
+## Sensor plots
+Generated analysis/SEN002-plots.png using analysis/plot_csv.py.
+The plots show pressure variation, approximately steady acceleration,
+persistent gyro offsets, and a brief gyro deviation at sample 20.
+All recorded acquisition-start intervals are 1000 ms.
+
+All samples remain included. No calibration or smoothing was applied.
+The 1 Hz recording does not characterize high-frequency sensor noise.
+Python dependencies are recorded in analysis/requirements.txt.
