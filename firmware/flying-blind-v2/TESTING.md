@@ -129,3 +129,21 @@ All recorded acquisition-start intervals are 1000 ms.
 All samples remain included. No calibration or smoothing was applied.
 The 1 Hz recording does not characterize high-frequency sensor noise.
 Python dependencies are recorded in analysis/requirements.txt.
+
+## Warmed-up stationary repeat test
+V2 remained powered for two minutes, then the same firmware was
+uploaded again without disconnecting power. The board was left stationary.
+
+SEN004.CSV contained 60 samples with 1000 ms intervals.
+Mean gyro readings (rad/s):
+- X: -0.051917
+- Y:  0.014250
+- Z: -0.016633
+
+The averages were close to SEN002, with lower variation on all gyro axes.
+No deviation comparable to SEN002 sample 20 appeared in this recording.
+All samples were retained.
+
+These are provisional stationary offset estimates.
+Temperature dependence and corrected performance remain untested.
+The recorded temperature is from the barometer, not the IMU.
