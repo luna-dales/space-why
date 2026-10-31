@@ -1,18 +1,40 @@
-	#include <Arduino.h>
+#include <Arduino.h>
+#include <Wire.h>
 
 void setup()
 {
-    pinMode(LED_BUILTIN, OUTPUT);
     Serial.begin(115200);
+
+    Wire.setSDA(18);
+    Wire.setSCL(19);
+    Wire.begin();
+    Wire.setClock(100000);
 }
 
 void loop()
 {
-    digitalWrite(LED_BUILTIN, HIGH);
-    Serial.println("Flying Blind V2 — LED ON");
-    delay(500);
+    Serial.println("Flying Blind V2 — I2C scan");
+    int found = 0;
 
-    digitalWrite(LED_BUILTIN, LOW);
-    Serial.println("Flying Blind V2 — LED OFF");
-    delay(500);
+    for (uint8_t address = 1; address < 127; address++)
+    {
+        Wire.beginTransmission(address);
+        uint8_t result = Wire.endTransmission();
+
+        if (result == 0)
+        {
+            Serial.print("Device found at 0x");
+            if (address < 16)
+            {
+                Serial.print("0");
+            }
+            Serial.println(address, HEX);
+            found++;
+        }
+    }
+
+    Serial.print("Devices found: ");
+    Serial.println(found);
+    Serial.println();
+    delay(3000);
 }
