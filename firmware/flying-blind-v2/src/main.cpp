@@ -26,14 +26,15 @@ char sessionFilename[13] = "";
 
 const char csvHeader[] =
     "sample,start_ms,pressure_mbar,temperature_c,"
-    "ax_mps2,ay_mps2,az_mps2,gx_radps,gy_radps,gz_radps\n";
+    "ax_mps2,ay_mps2,az_mps2,gx_radps,gy_radps,gz_radps,"
+    "gx_radps_corrected,gy_radps_corrected,gz_radps_corrected\n";
 
 bool createSession()
 {
     for (unsigned int index = 0; index < 1000; index++)
     {
         snprintf(sessionFilename, sizeof(sessionFilename),
-                 "SEN%03u.CSV", index);
+                 "CAL%03u.CSV", index);
 
         if (SD.exists(sessionFilename))
         {
@@ -71,6 +72,12 @@ bool appendRow(const char *row, size_t length)
     file.close();
     return written == length;
 }
+
+// Fixed profile: analysis/SEN004-gyro-bias.json
+// Units: rad/s. Rounded to nine decimal places.
+const double gyroOffsetX = -0.051916667;
+const double gyroOffsetY =  0.014250000;
+const double gyroOffsetZ = -0.016633333;
 
 void setup()
 {
@@ -153,11 +160,16 @@ void loop()
         return;
     }
 
+    const double correctedGyroX = rotation.gyro.x - gyroOffsetX;
+    const double correctedGyroY = rotation.gyro.y - gyroOffsetY;
+    const double correctedGyroZ = rotation.gyro.z - gyroOffsetZ;
+
     char row[256];
 
     int length = snprintf(
         row, sizeof(row),
-        "%lu,%lu,%.2f,%.2f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f\n",
+        "%lu,%lu,%.2f,%.2f,%.3f,%.3f,%.3f,"
+        "%.9f,%.9f,%.9f,%.9f,%.9f,%.9f\n",
         (unsigned long)currentSample,
         (unsigned long)nowMs,
         barometer.getPressure(),
@@ -167,7 +179,10 @@ void loop()
         acceleration.acceleration.z,
         rotation.gyro.x,
         rotation.gyro.y,
-        rotation.gyro.z);
+        rotation.gyro.z,
+        correctedGyroX,
+        correctedGyroY,
+        correctedGyroZ);
 
     if (length <= 0 || length >= (int)sizeof(row))
     {
@@ -177,6 +192,7 @@ void loop()
 
     // Display the same row that will be written to the card.
     Serial.print(csvHeader);
+    Serial.println("Gyro calibration profile: SEN004-gyro-bias");
     Serial.print(row);
 
     if (!recordingReady)

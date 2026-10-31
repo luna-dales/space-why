@@ -10,23 +10,30 @@ COLUMNS = [
     "gx_radps", "gy_radps", "gz_radps",
 ]
 
+CORRECTED_COLUMNS = [
+    "gx_radps_corrected",
+    "gy_radps_corrected",
+    "gz_radps_corrected",
+]
 
 def analyze(path):
     with path.open(newline="", encoding="utf-8-sig") as file:
         reader = csv.DictReader(file)
 
-        if reader.fieldnames != COLUMNS:
-            raise ValueError("CSV columns do not match the expected format.")
+        columns = reader.fieldnames
+
+        if columns not in (COLUMNS, COLUMNS + CORRECTED_COLUMNS):
+            raise ValueError("CSV columns do not match a supported format.")
 
         rows = []
 
         for line_number, record in enumerate(reader, start=2):
             if None in record or any(
-                record[column] in (None, "") for column in COLUMNS
+                record[column] in (None, "") for column in columns
             ):
                 raise ValueError(f"Missing or extra fields on line {line_number}.")
 
-            row = {column: float(record[column]) for column in COLUMNS}
+            row = {column: float(record[column]) for column in columns}
 
             if not all(math.isfinite(value) for value in row.values()):
                 raise ValueError(f"Non-finite number on line {line_number}.")
@@ -54,7 +61,7 @@ def analyze(path):
 
     print(f"File: {path.name}")
     print(f"Rows: {len(rows)}")
-    print(f"Columns: {len(COLUMNS)}")
+    print(f"Columns: {len(columns)}")
     print(
         f"Sample range: {int(rows[0]['sample'])}"
         f" to {int(rows[-1]['sample'])}"
@@ -74,7 +81,7 @@ def analyze(path):
 
     print("\nMeasurement,mean,sample_stddev,min,max")
 
-    for column in COLUMNS[2:]:
+    for column in columns[2:]:
         values = [row[column] for row in rows]
         print(
             f"{column},"
@@ -94,7 +101,10 @@ def analyze(path):
         "\nMean acceleration magnitude (m/s^2): "
         f"{statistics.mean(magnitudes):.6f}"
     )
-    print("\nAll samples retained. No calibration corrections applied.")
+    print("\nAll samples retained. Values analyzed as recorded.")
+
+    if columns == COLUMNS + CORRECTED_COLUMNS:
+        print("File contains raw and firmware-corrected gyro values.")
     print("Variation includes noise, drift, and any actual movement.")
     print("Gyro means estimate offsets only if the board was stationary.")
 

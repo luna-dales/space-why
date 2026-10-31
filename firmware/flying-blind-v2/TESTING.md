@@ -168,3 +168,29 @@ python analysis/apply_gyro_bias.py data/SEN006.CSV analysis/SEN004-gyro-bias.jso
 
 Derived data: analysis/SEN006-gyro-corrected.csv
 The script refuses to overwrite an existing derived file.
+
+## Firmware gyro-offset correction — October 31, 2026
+Applied the fixed SEN004 gyro offsets in firmware.
+Preserved raw gyro readings and added three corrected columns.
+CAL-prefixed session files use the expanded 13-column format.
+
+CAL000.CSV readback verified:
+- 60 samples numbered 0–59.
+- All acquisition-start intervals were 1000 ms.
+- All corrected values matched raw minus the firmware offsets
+  to the saved precision.
+
+Corrected gyro means (rad/s):
+- X: -0.000470
+- Y: -0.000056
+- Z: -0.000323
+
+Analysis and plotting tools support both 10- and 13-column files.
+Raw and corrected gyro plots use independent vertical scales.
+Offset subtraction does not reduce random variation.
+
+The supplied console output also contained an earlier MPU6050
+initialization failure and a USB disconnect/reconnect.
+Startup reliability remains unresolved.
+The card's filesystem date was incorrect; elapsed acquisition
+timestamps were checked independently.

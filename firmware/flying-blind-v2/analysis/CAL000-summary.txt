@@ -1,0 +1,28 @@
+File: CAL000.CSV
+Rows: 60
+Columns: 13
+Sample range: 0 to 59
+Consecutive sample numbers: True
+Strictly increasing timestamps: True
+Interval min / mean / max (ms): 1000.000 / 1000.000 / 1000.000
+First-to-last sample span (s): 59.000
+
+Measurement,mean,sample_stddev,min,max
+pressure_mbar,1005.191833,0.099396,1004.930000,1005.430000
+temperature_c,26.763500,0.092952,26.630000,26.910000
+ax_mps2,-1.183167,0.016945,-1.214000,-1.156000
+ay_mps2,0.019533,0.010826,-0.002000,0.041000
+az_mps2,9.547050,0.013936,9.512000,9.579000
+gx_radps,-0.052387,0.000553,-0.053559,-0.050894
+gy_radps,0.014194,0.000665,0.012790,0.015455
+gz_radps,-0.016956,0.000517,-0.018386,-0.015988
+gx_radps_corrected,-0.000470,0.000553,-0.001642,0.001022
+gy_radps_corrected,-0.000056,0.000665,-0.001460,0.001205
+gz_radps_corrected,-0.000323,0.000517,-0.001753,0.000646
+
+Mean acceleration magnitude (m/s^2): 9.620125
+
+All samples retained. Values analyzed as recorded.
+File contains raw and firmware-corrected gyro values.
+Variation includes noise, drift, and any actual movement.
+Gyro means estimate offsets only if the board was stationary.
