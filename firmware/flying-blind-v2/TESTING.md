@@ -84,3 +84,17 @@ The cause of this recurrence remains unresolved.
 The latest no-continuity report was invalid because the meter
 was on the wrong setting; it does not establish another failed joint.
 Both sensors worked during the BAR006.CSV capture.
+
+## Combined sensor CSV recording
+Verified data/SEN001.CSV by reading the card on the computer:
+- One header and 10 rows, numbered 0–9.
+- Ten columns containing sample number, acquisition-start time,
+  pressure, barometer temperature, acceleration XYZ, and gyro XYZ.
+- Acquisition starts spaced 1000 ms apart.
+- Saved values matched Serial Monitor output.
+- Recording stopped after 10 rows; live readings continued.
+
+Measurements are uncalibrated and acquired sequentially.
+The first acceleration sample differed from subsequent stationary samples;
+its cause remains unconfirmed.
+Intermittent MPU6050 communication remains an unresolved reliability issue.

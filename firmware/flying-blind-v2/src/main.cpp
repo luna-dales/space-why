@@ -9,93 +9,67 @@
 MS5611 barometer(0x77);
 Adafruit_MPU6050 imu;
 
+const uint8_t sdChipSelect = 10;
+const uint32_t sampleIntervalMs = 1000;
+const uint32_t captureLimit = 10;
+
 bool barometerReady = false;
 bool imuReady = false;
+bool sdReady = false;
+bool recordingReady = false;
 
 uint32_t sampleNumber = 0;
-
-const uint32_t sampleIntervalMs = 1000;
 uint32_t lastSampleMs = 0;
+uint32_t rowsWritten = 0;
 
-const uint8_t sdChipSelect = 10;
-bool sdReady = false;
-bool sdTestWritePassed = false;
+char sessionFilename[13] = "";
 
-uint32_t barometerRowsWritten = 0;
+const char csvHeader[] =
+    "sample,start_ms,pressure_mbar,temperature_c,"
+    "ax_mps2,ay_mps2,az_mps2,gx_radps,gy_radps,gz_radps\n";
 
-char barometerFilename[13] = "";
-bool barometerSessionReady = false;
-
-bool createBarometerSession()
+bool createSession()
 {
     for (unsigned int index = 0; index < 1000; index++)
     {
-        snprintf(barometerFilename, sizeof(barometerFilename),
-                 "BAR%03u.CSV", index);
+        snprintf(sessionFilename, sizeof(sessionFilename),
+                 "SEN%03u.CSV", index);
 
-        if (SD.exists(barometerFilename))
+        if (SD.exists(sessionFilename))
         {
             continue;
         }
 
-        File dataFile = SD.open(barometerFilename, FILE_WRITE);
+        File file = SD.open(sessionFilename, FILE_WRITE);
 
-        if (!dataFile)
+        if (!file)
         {
             return false;
         }
 
-        const char header[] =
-            "sample,start_ms,pressure_mbar,temperature_c\n";
+        size_t written = file.print(csvHeader);
+        file.close();
 
-        size_t written = dataFile.print(header);
-        dataFile.close();
-
-        return written == sizeof(header) - 1;
+        return written == sizeof(csvHeader) - 1;
     }
 
     return false;
 }
 
-bool saveBarometerSample(uint32_t number, uint32_t timeMs, float pressure, float temperature)
+bool appendRow(const char *row, size_t length)
 {
-    File dataFile = SD.open(barometerFilename, FILE_WRITE);
+    File file = SD.open(sessionFilename, FILE_WRITE);
 
-    if (!dataFile)
+    if (!file)
     {
         return false;
     }
 
-    const char header[] =
-        "sample,start_ms,pressure_mbar,temperature_c\n";
-
-    if (dataFile.size() == 0)
-    {
-        if (dataFile.print(header) != sizeof(header) - 1)
-        {
-            dataFile.close();
-            return false;
-        }
-    }
-
-    char row[96];
-    int length = snprintf(
-        row, sizeof(row), "%lu,%lu,%.2f,%.2f\n",
-        (unsigned long)number,
-        (unsigned long)timeMs,
-        pressure, temperature);
-
-    if (length <= 0 || length >= (int)sizeof(row))
-    {
-        dataFile.close();
-        return false;
-    }
-
-    size_t written = dataFile.write(
+    size_t written = file.write(
         reinterpret_cast<const uint8_t *>(row), length);
 
-    dataFile.close();
-    return written == (size_t)length;
+    file.close();
+    return written == length;
 }
 
 void setup()
@@ -111,7 +85,7 @@ void setup()
 
     if (barometerReady)
     {
-        // Alternate calculation required by this barometer module.
+        // Alternate calculation used by this barometer module.
         barometerReady = barometer.reset(1);
     }
 
@@ -126,23 +100,12 @@ void setup()
     }
 
     sdReady = SD.begin(sdChipSelect);
-    if (sdReady)
+
+    // Create a recording only if both sensors initialized.
+    if (sdReady && barometerReady && imuReady)
     {
-        File testFile = SD.open("V2TEST.TXT", FILE_WRITE);
-
-        if (testFile)
-        {
-            const char testLine[] = "Flying Blind V2: microSD write test\n";
-
-            size_t bytesWritten = testFile.print(testLine);
-            testFile.close();
-
-            sdTestWritePassed =
-                (bytesWritten == sizeof(testLine) - 1);
-        }
+        recordingReady = createSession();
     }
-
-    barometerSessionReady = sdReady && createBarometerSession();
 }
 
 void loop()
@@ -155,110 +118,98 @@ void loop()
     }
 
     lastSampleMs = nowMs;
+    uint32_t currentSample = sampleNumber++;
 
     Serial.print("Sample: ");
-    Serial.print(sampleNumber++);
+    Serial.print(currentSample);
     Serial.print(" | Start (ms since boot): ");
     Serial.println(nowMs);
 
-    Wire.beginTransmission(0x68);
-    uint8_t imuStatus = Wire.endTransmission();
-
-    Serial.print("MPU6050 address response: ");
-    Serial.println(imuStatus);
-
-    Serial.print("microSD initialization: ");
-    Serial.println(sdReady ? "SUCCESS" : "FAILED");
-
-    Serial.print("microSD test write: ");
-    Serial.println(sdTestWritePassed ? "PASSED" : "FAILED");
-
-    Serial.print("Barometer CSV session: ");
-    if (barometerSessionReady)
+    if (!barometerReady || !imuReady)
     {
-        Serial.println(barometerFilename);
-    }
-    else
-    {
-        Serial.println("FAILED — recording disabled");
+        Serial.print("Barometer initialization: ");
+        Serial.println(barometerReady ? "SUCCESS" : "FAILED");
+        Serial.print("MPU6050 initialization: ");
+        Serial.println(imuReady ? "SUCCESS" : "FAILED");
+        Serial.println("Recording disabled.");
+        Serial.println();
+        return;
     }
 
-    if (!barometerReady)
-    {
-        Serial.println("ERROR: Barometer initialization failed.");
-    }
-    else
-    {
-        int result = barometer.read();
+    int barometerResult = barometer.read();
 
-        if (result == MS5611_READ_OK)
+    sensors_event_t acceleration, rotation, imuTemperature;
+    bool imuReadOK =
+        imu.getEvent(&acceleration, &rotation, &imuTemperature);
+
+    if (barometerResult != MS5611_READ_OK || !imuReadOK)
+    {
+        Serial.print("Barometer read result: ");
+        Serial.println(barometerResult);
+        Serial.print("MPU6050 read reported: ");
+        Serial.println(imuReadOK ? "SUCCESS" : "FAILED");
+        Serial.println("Sample not recorded.");
+        Serial.println();
+        return;
+    }
+
+    char row[256];
+
+    int length = snprintf(
+        row, sizeof(row),
+        "%lu,%lu,%.2f,%.2f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f\n",
+        (unsigned long)currentSample,
+        (unsigned long)nowMs,
+        barometer.getPressure(),
+        barometer.getTemperature(),
+        acceleration.acceleration.x,
+        acceleration.acceleration.y,
+        acceleration.acceleration.z,
+        rotation.gyro.x,
+        rotation.gyro.y,
+        rotation.gyro.z);
+
+    if (length <= 0 || length >= (int)sizeof(row))
+    {
+        Serial.println("ERROR: CSV row formatting failed.");
+        return;
+    }
+
+    // Display the same row that will be written to the card.
+    Serial.print(csvHeader);
+    Serial.print(row);
+
+    if (!recordingReady)
+    {
+        Serial.println("Recording unavailable: check card/session creation.");
+    }
+    else if (rowsWritten < captureLimit)
+    {
+        if (appendRow(row, (size_t)length))
         {
-            Serial.print("Pressure: ");
-            Serial.print(barometer.getPressure(), 2);
-            Serial.print(" mbar | Temperature: ");
-            Serial.print(barometer.getTemperature(), 2);
-            Serial.println(" C");
+            rowsWritten++;
 
-            if (barometerSessionReady && barometerRowsWritten < 10)
+            Serial.print("Session: ");
+            Serial.print(sessionFilename);
+            Serial.print(" | Rows saved: ");
+            Serial.println(rowsWritten);
+
+            if (rowsWritten == captureLimit)
             {
-                // sampleNumber was incremented when printed above.
-                bool saved = saveBarometerSample(
-                    sampleNumber - 1, nowMs,
-                    barometer.getPressure(),
-                    barometer.getTemperature());
-
-                if (saved)
-                {
-                    barometerRowsWritten++;
-                    Serial.print("Barometer CSV rows saved: ");
-                    Serial.println(barometerRowsWritten);
-
-                    if (barometerRowsWritten == 10)
-                    {
-                        Serial.println("CSV capture complete. File closed.");
-                    }
-                }
-                else
-                {
-                    Serial.println("ERROR: Barometer CSV write failed.");
-                }
+                Serial.println("CSV capture complete. File closed.");
             }
         }
         else
         {
-            Serial.print("ERROR: Barometer read failed. Code: ");
-            Serial.println(result);
+            // Stop after a write failure to avoid further partial rows.
+            recordingReady = false;
+            Serial.println("ERROR: CSV write failed. Recording stopped.");
         }
-    }
-
-    if (!imuReady)
-    {
-        Serial.println("ERROR: MPU6050 initialization failed.");
     }
     else
     {
-        sensors_event_t acceleration, rotation, temperature;
-
-        if (imu.getEvent(&acceleration, &rotation, &temperature))
-        {
-            Serial.print("Acceleration (m/s^2): X=");
-            Serial.print(acceleration.acceleration.x, 3);
-            Serial.print(" Y=");
-            Serial.print(acceleration.acceleration.y, 3);
-            Serial.print(" Z=");
-            Serial.println(acceleration.acceleration.z, 3);
-
-            Serial.print("Angular velocity (rad/s): X=");
-            Serial.print(rotation.gyro.x, 3);
-            Serial.print(" Y=");
-            Serial.print(rotation.gyro.y, 3);
-            Serial.print(" Z=");
-            Serial.println(rotation.gyro.z, 3);
-        }
-        else
-        {
-            Serial.println("ERROR: MPU6050 read failed.");
-        }
+        Serial.print("Capture already complete: ");
+        Serial.println(sessionFilename);
     }
 
     Serial.println();
