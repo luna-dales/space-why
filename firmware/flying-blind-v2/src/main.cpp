@@ -19,6 +19,7 @@ uint32_t lastSampleMs = 0;
 
 const uint8_t sdChipSelect = 10;
 bool sdReady = false;
+bool sdTestWritePassed = false;
 
 void setup()
 {
@@ -48,6 +49,21 @@ void setup()
     }
 
     sdReady = SD.begin(sdChipSelect);
+    if (sdReady)
+    {
+        File testFile = SD.open("V2TEST.TXT", FILE_WRITE);
+
+        if (testFile)
+        {
+            const char testLine[] = "Flying Blind V2: microSD write test\n";
+
+            size_t bytesWritten = testFile.print(testLine);
+            testFile.close();
+
+            sdTestWritePassed =
+                (bytesWritten == sizeof(testLine) - 1);
+        }
+    }
 }
 
 void loop()
@@ -68,6 +84,9 @@ void loop()
 
     Serial.print("microSD initialization: ");
     Serial.println(sdReady ? "SUCCESS" : "FAILED");
+
+    Serial.print("microSD test write: ");
+    Serial.println(sdTestWritePassed ? "PASSED" : "FAILED");
 
     if (!barometerReady)
     {

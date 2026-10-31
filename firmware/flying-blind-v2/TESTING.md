@@ -52,3 +52,12 @@ Subsequent samples settled near gravity. Its cause remains unconfirmed.
 - Both sensors continued producing readings.
 - Observed sample starts remained 1000 ms apart.
 - File writing and readback have not yet been tested.
+
+## microSD file write and readback
+The firmware appended a known test line to V2TEST.TXT and closed it.
+After disconnecting power, the card was read on the computer.
+The file contained:
+Flying Blind V2: microSD write test
+
+This verifies a basic file write and computer readback.
+Continuous sensor logging has not yet been tested.
