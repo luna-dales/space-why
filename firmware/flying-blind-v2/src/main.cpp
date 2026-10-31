@@ -10,6 +10,8 @@ Adafruit_MPU6050 imu;
 bool barometerReady = false;
 bool imuReady = false;
 
+uint32_t sampleNumber = 0;
+
 void setup()
 {
     Serial.begin(115200);
@@ -40,6 +42,11 @@ void setup()
 
 void loop()
 {
+    Serial.print("Sample: ");
+    Serial.print(sampleNumber++);
+    Serial.print(" | Start (ms since boot): ");
+    Serial.println(millis());
+
     if (!barometerReady)
     {
         Serial.println("ERROR: Barometer initialization failed.");
