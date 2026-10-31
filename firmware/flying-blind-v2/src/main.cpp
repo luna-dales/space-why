@@ -23,9 +23,43 @@ bool sdTestWritePassed = false;
 
 uint32_t barometerRowsWritten = 0;
 
+char barometerFilename[13] = "";
+bool barometerSessionReady = false;
+
+bool createBarometerSession()
+{
+    for (unsigned int index = 0; index < 1000; index++)
+    {
+        snprintf(barometerFilename, sizeof(barometerFilename),
+                 "BAR%03u.CSV", index);
+
+        if (SD.exists(barometerFilename))
+        {
+            continue;
+        }
+
+        File dataFile = SD.open(barometerFilename, FILE_WRITE);
+
+        if (!dataFile)
+        {
+            return false;
+        }
+
+        const char header[] =
+            "sample,start_ms,pressure_mbar,temperature_c\n";
+
+        size_t written = dataFile.print(header);
+        dataFile.close();
+
+        return written == sizeof(header) - 1;
+    }
+
+    return false;
+}
+
 bool saveBarometerSample(uint32_t number, uint32_t timeMs, float pressure, float temperature)
 {
-    File dataFile = SD.open("V2BARO.CSV", FILE_WRITE);
+    File dataFile = SD.open(barometerFilename, FILE_WRITE);
 
     if (!dataFile)
     {
@@ -107,6 +141,8 @@ void setup()
                 (bytesWritten == sizeof(testLine) - 1);
         }
     }
+
+    barometerSessionReady = sdReady && createBarometerSession();
 }
 
 void loop()
@@ -125,11 +161,27 @@ void loop()
     Serial.print(" | Start (ms since boot): ");
     Serial.println(nowMs);
 
+    Wire.beginTransmission(0x68);
+    uint8_t imuStatus = Wire.endTransmission();
+
+    Serial.print("MPU6050 address response: ");
+    Serial.println(imuStatus);
+
     Serial.print("microSD initialization: ");
     Serial.println(sdReady ? "SUCCESS" : "FAILED");
 
     Serial.print("microSD test write: ");
     Serial.println(sdTestWritePassed ? "PASSED" : "FAILED");
+
+    Serial.print("Barometer CSV session: ");
+    if (barometerSessionReady)
+    {
+        Serial.println(barometerFilename);
+    }
+    else
+    {
+        Serial.println("FAILED — recording disabled");
+    }
 
     if (!barometerReady)
     {
@@ -147,7 +199,7 @@ void loop()
             Serial.print(barometer.getTemperature(), 2);
             Serial.println(" C");
 
-            if (sdReady && barometerRowsWritten < 10)
+            if (barometerSessionReady && barometerRowsWritten < 10)
             {
                 // sampleNumber was incremented when printed above.
                 bool saved = saveBarometerSample(

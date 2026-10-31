@@ -61,3 +61,26 @@ Flying Blind V2: microSD write test
 
 This verifies a basic file write and computer readback.
 Continuous sensor logging has not yet been tested.
+
+## Barometer CSV recording
+Verified V2BARO.CSV by reading the card on the computer.
+It contained two complete startup batches of 10 samples each.
+Each batch numbered samples 0–9 with 1000 ms timestamp intervals.
+The second batch matched the Serial Monitor output.
+
+Original data preserved in data/barometer-two-startups.csv.
+The current program appends batches to one file.
+Separate session files and IMU recording are pending.
+
+## Separate recording sessions
+Each startup selects the first unused BAR000.CSV–BAR999.CSV filename.
+Computer readback verified BAR001.CSV and BAR006.CSV:
+each contained one header and 10 rows numbered 0–9.
+Copies are preserved in data/.
+
+MPU6050 communication failed during some intervening startups
+(address response 2), then recovered (response 0).
+The cause of this recurrence remains unresolved.
+The latest no-continuity report was invalid because the meter
+was on the wrong setting; it does not establish another failed joint.
+Both sensors worked during the BAR006.CSV capture.
