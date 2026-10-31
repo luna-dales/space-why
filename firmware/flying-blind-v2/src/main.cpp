@@ -3,6 +3,8 @@
 #include <MS5611.h>
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
+#include <SPI.h>
+#include <SD.h>
 
 MS5611 barometer(0x77);
 Adafruit_MPU6050 imu;
@@ -14,6 +16,9 @@ uint32_t sampleNumber = 0;
 
 const uint32_t sampleIntervalMs = 1000;
 uint32_t lastSampleMs = 0;
+
+const uint8_t sdChipSelect = 10;
+bool sdReady = false;
 
 void setup()
 {
@@ -41,6 +46,8 @@ void setup()
         imu.setGyroRange(MPU6050_RANGE_500_DEG);
         imu.setFilterBandwidth(MPU6050_BAND_21_HZ);
     }
+
+    sdReady = SD.begin(sdChipSelect);
 }
 
 void loop()
@@ -58,6 +65,9 @@ void loop()
     Serial.print(sampleNumber++);
     Serial.print(" | Start (ms since boot): ");
     Serial.println(nowMs);
+
+    Serial.print("microSD initialization: ");
+    Serial.println(sdReady ? "SUCCESS" : "FAILED");
 
     if (!barometerReady)
     {

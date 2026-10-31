@@ -44,3 +44,11 @@ After resoldering the SCL joint:
 
 The first acceleration sample after restoration was unusually low.
 Subsequent samples settled near gravity. Its cause remains unconfirmed.
+
+## microSD initialization
+- Module supply measured 3.3 V.
+- SPI connections: CS=10, MOSI=11, MISO=12, SCK=13.
+- SD.begin(10) returned success.
+- Both sensors continued producing readings.
+- Observed sample starts remained 1000 ms apart.
+- File writing and readback have not yet been tested.
