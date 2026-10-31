@@ -21,6 +21,49 @@ const uint8_t sdChipSelect = 10;
 bool sdReady = false;
 bool sdTestWritePassed = false;
 
+uint32_t barometerRowsWritten = 0;
+
+bool saveBarometerSample(uint32_t number, uint32_t timeMs, float pressure, float temperature)
+{
+    File dataFile = SD.open("V2BARO.CSV", FILE_WRITE);
+
+    if (!dataFile)
+    {
+        return false;
+    }
+
+    const char header[] =
+        "sample,start_ms,pressure_mbar,temperature_c\n";
+
+    if (dataFile.size() == 0)
+    {
+        if (dataFile.print(header) != sizeof(header) - 1)
+        {
+            dataFile.close();
+            return false;
+        }
+    }
+
+    char row[96];
+    int length = snprintf(
+        row, sizeof(row), "%lu,%lu,%.2f,%.2f\n",
+        (unsigned long)number,
+        (unsigned long)timeMs,
+        pressure, temperature);
+
+    if (length <= 0 || length >= (int)sizeof(row))
+    {
+        dataFile.close();
+        return false;
+    }
+
+    size_t written = dataFile.write(
+        reinterpret_cast<const uint8_t *>(row), length);
+
+    dataFile.close();
+    return written == (size_t)length;
+}
+
 void setup()
 {
     Serial.begin(115200);
@@ -103,6 +146,31 @@ void loop()
             Serial.print(" mbar | Temperature: ");
             Serial.print(barometer.getTemperature(), 2);
             Serial.println(" C");
+
+            if (sdReady && barometerRowsWritten < 10)
+            {
+                // sampleNumber was incremented when printed above.
+                bool saved = saveBarometerSample(
+                    sampleNumber - 1, nowMs,
+                    barometer.getPressure(),
+                    barometer.getTemperature());
+
+                if (saved)
+                {
+                    barometerRowsWritten++;
+                    Serial.print("Barometer CSV rows saved: ");
+                    Serial.println(barometerRowsWritten);
+
+                    if (barometerRowsWritten == 10)
+                    {
+                        Serial.println("CSV capture complete. File closed.");
+                    }
+                }
+                else
+                {
+                    Serial.println("ERROR: Barometer CSV write failed.");
+                }
+            }
         }
         else
         {
