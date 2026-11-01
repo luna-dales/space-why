@@ -3,3 +3,19 @@
 .design-image img{height:auto;object-fit:contain;background:#fff}.design-subheading{margin-top:48px}.design-pair img{height:auto;background:#fff}.schematic-preview{max-width:420px}.schematic-preview img{width:256px;height:256px;background:#fff}
 
 .design-image{margin-block:28px}.design-image a{display:block}.design-image img{width:100%;height:auto;object-fit:contain}
+
+
+/* Flying Blind V2 capability cards and accessible numeric evidence. */
+.v2-capability-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin-top:32px}
+.v2-capability-grid article{border-top:3px solid var(--blue);padding-top:22px}
+.v2-capability-grid p{font-size:1rem}
+.v2-results-figure{max-width:1000px;margin-inline:auto}
+.v2-table-scroll{overflow-x:auto;margin-block:26px;border:1px solid var(--line)}
+.v2-table-scroll:focus-visible{outline:3px solid #df7900;outline-offset:4px}
+.v2-results-table{width:100%;border-collapse:collapse;text-align:left;font-size:1rem}
+.v2-results-table caption{text-align:left;padding:18px;font-weight:600;background:var(--pale)}
+.v2-results-table th,.v2-results-table td{padding:14px 18px;border-top:1px solid var(--line)}
+.v2-results-table thead th{background:var(--pale)}
+.v2-results-table td{font-variant-numeric:tabular-nums}
+@media(max-width:900px){.v2-capability-grid{grid-template-columns:1fr;gap:24px}}
+@media(max-width:620px){.v2-results-table th,.v2-results-table td{padding:12px}.v2-results-table{font-size:.9375rem}}
