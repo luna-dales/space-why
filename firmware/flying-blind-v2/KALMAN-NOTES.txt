@@ -1,0 +1,77 @@
+Flying Blind V2: experimental barometric altitude Kalman filter
+Prepared November 1, 2026.
+
+INSTALLATION
+Copy include/AltitudeKalman.h into the V2 project's include folder.
+Replace src/main.cpp, analysis/analyze_csv.py, and analysis/plot_csv.py
+with the supplied versions. Copy this note and analysis/tests/ if desired.
+The src/main.cpp copy preserves the existing barometer startup diagnostics.
+It does not contain changes to your calibration data or TESTING.md.
+No new PlatformIO libraries are needed.
+Build and upload using the existing teensy40 environment.
+
+SCOPE
+This is a real two-state linear Kalman filter: relative altitude and
+vertical velocity. It uses a constant-velocity transition and an unknown
+interval acceleration process-noise model, followed by barometric correction.
+It does NOT fuse IMU acceleration. Accelerometer calibration, gravity
+removal, attitude processing, sensor diagnostics, and flight validation
+remain deferred. Existing gyro corrections are retained as before.
+
+REFERENCE AND TIMING
+The first successful combined sample establishes reference pressure and
+zero relative altitude. The standard-atmosphere approximation is:
+  h = 44330 * (1 - (pressure/reference_pressure)^0.1903)
+This is not MSL altitude, an independent height reference, or a weather-
+compensated estimate. First-reference error is shared by later samples.
+The filter uses elapsed acquisition-start time, including gaps caused by
+rejected readings, using unsigned millisecond subtraction across rollover.
+There is no prediction-only row during a sensor read failure. Existing
+startup gating still requires both sensors and the card for recording.
+The model continues to run after the 60 saved rows; only 60 are saved.
+
+TUNING (PROVISIONAL)
+Measurement variance R = 1 m^2 (assumed altitude sigma = 1 m).
+Unknown interval acceleration variance q = 1 m^2/s^4.
+Initial height variance = 1 m^2; initial velocity variance = 25 (m/s)^2.
+Q = q * G * G', G = [dt^2/2, dt]'.
+These are initial bench choices, not fitted or validated flight settings.
+Sigma outputs reflect model assumptions; they are not measured accuracy.
+Smoothed output or low stationary velocity does not prove altitude accuracy.
+Velocity is inferred from pressure history, not measured by the IMU.
+
+RECORDING AND ANALYSIS
+Unique sessions: KAL000.CSV through KAL999.CSV; existing files are skipped.
+21 columns retain the 13 CAL fields and append reference pressure,
+barometric altitude, estimated altitude/velocity, their model sigmas,
+and both variance settings. Buffer is enlarged to 512 bytes.
+The analyzers support SEN (10), CAL (13), and KAL (21) column formats.
+The plotter adds barometric versus filtered altitude and vertical velocity.
+  python analysis/analyze_csv.py data/KAL000.CSV
+  python analysis/plot_csv.py data/KAL000.CSV
+No calendar-clock changes are included. The known card-date issue remains.
+
+HOST NUMERICAL CHECK
+From the V2 project root on a computer with a C++ compiler:
+  c++ -std=c++11 -Wall -Wextra -pedantic -Iinclude analysis/tests/kalman_host_test.cpp -o /tmp/flying-blind-kalman-test
+  /tmp/flying-blind-kalman-test
+The checks compare the filter with an independent full-matrix reference,
+exercise variable time intervals, invalid inputs, covariance consistency,
+pressure conversion, and a synthetic stationary-noise scenario.
+These are numerical checks, not Teensy hardware or altitude accuracy tests.
+A complete Teensy 4.0 PlatformIO build passed in an isolated copy.
+Device upload, recording, and physical accuracy tests remain for Luna.
+
+MODEL REFERENCES
+https://www.mathworks.com/help/fusion/ug/linear-kalman-filters.html
+https://www.grc.nasa.gov/www/k-12/airplane/atmosmet.html
+The common 44330/0.1903 pressure-ratio approximation is also used in
+Adafruit's barometer libraries; no Adafruit implementation is copied here.
+https://github.com/adafruit/Adafruit_BMP280_Library
+
+COMMIT DESCRIPTION
+Add experimental barometer-only altitude/velocity Kalman estimation.
+Retain raw sensor and gyro-corrected values; log reference pressure,
+filter estimates, model uncertainty, and provisional tuning settings.
+Calibration, component reliability, IMU fusion, and physical accuracy
+validation remain pending. Do not describe this as a flight-validated system.

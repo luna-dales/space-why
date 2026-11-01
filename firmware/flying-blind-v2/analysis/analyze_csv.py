@@ -16,13 +16,25 @@ CORRECTED_COLUMNS = [
     "gz_radps_corrected",
 ]
 
+KALMAN_COLUMNS = [
+    "reference_pressure_mbar", "baro_altitude_m", "kf_altitude_m",
+    "kf_velocity_mps", "kf_altitude_sigma_m", "kf_velocity_sigma_mps",
+    "kf_measurement_variance_m2", "kf_acceleration_variance_m2s4",
+]
+
+SUPPORTED_COLUMNS = (
+    COLUMNS,
+    COLUMNS + CORRECTED_COLUMNS,
+    COLUMNS + CORRECTED_COLUMNS + KALMAN_COLUMNS,
+)
+
 def analyze(path):
     with path.open(newline="", encoding="utf-8-sig") as file:
         reader = csv.DictReader(file)
 
         columns = reader.fieldnames
 
-        if columns not in (COLUMNS, COLUMNS + CORRECTED_COLUMNS):
+        if columns not in SUPPORTED_COLUMNS:
             raise ValueError("CSV columns do not match a supported format.")
 
         rows = []
@@ -103,8 +115,11 @@ def analyze(path):
     )
     print("\nAll samples retained. Values analyzed as recorded.")
 
-    if columns == COLUMNS + CORRECTED_COLUMNS:
+    if all(column in columns for column in CORRECTED_COLUMNS):
         print("File contains raw and firmware-corrected gyro values.")
+    if "kf_altitude_m" in columns:
+        print("Experimental barometer-only Kalman output; IMU not fused.")
+        print("Sigma columns are model uncertainty, not measured accuracy.")
     print("Variation includes noise, drift, and any actual movement.")
     print("Gyro means estimate offsets only if the board was stationary.")
 

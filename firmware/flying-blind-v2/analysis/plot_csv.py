@@ -5,7 +5,7 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 
-from analyze_csv import COLUMNS, CORRECTED_COLUMNS
+from analyze_csv import CORRECTED_COLUMNS, SUPPORTED_COLUMNS
 
 
 def plot_recording(path):
@@ -13,10 +13,11 @@ def plot_recording(path):
         reader = csv.DictReader(file)
         columns = reader.fieldnames
 
-        if columns not in (COLUMNS, COLUMNS + CORRECTED_COLUMNS):
+        if columns not in SUPPORTED_COLUMNS:
             raise ValueError("Unexpected CSV columns.")
 
-        has_corrections = columns == COLUMNS + CORRECTED_COLUMNS
+        has_corrections = all(column in columns for column in CORRECTED_COLUMNS)
+        has_kalman = "kf_altitude_m" in columns
         rows = []
 
         for line_number, record in enumerate(reader, start=2):
@@ -59,7 +60,7 @@ def plot_recording(path):
             "Timestamps must increase within one session."
         )
 
-    panel_count = 5 if has_corrections else 4
+    panel_count = (5 if has_corrections else 4) + (2 if has_kalman else 0)
 
     fig, axes = plt.subplots(
         panel_count,
@@ -143,6 +144,20 @@ def plot_recording(path):
         axes[3].legend(loc="best")
         timing_axis = axes[4]
 
+    if has_kalman:
+        axes[4].plot(times, [row["baro_altitude_m"] for row in rows],
+                     label="Barometric altitude", marker=".", linewidth=1)
+        axes[4].plot(times, [row["kf_altitude_m"] for row in rows],
+                     label="Kalman altitude", linewidth=1.5)
+        axes[4].set_ylabel("Relative altitude (m)")
+        axes[4].legend(loc="best")
+        axes[5].plot(times, [row["kf_velocity_mps"] for row in rows],
+                     label="Estimated vertical velocity", linewidth=1)
+        axes[5].axhline(0, color="black", linestyle="--", linewidth=0.8)
+        axes[5].set_ylabel("Vertical velocity (m/s)")
+        axes[5].legend(loc="best")
+
+    timing_axis = axes[-1]
     # Final panel: interval ending at each acquisition.
     timing_axis.plot(
         times[1:],
@@ -164,7 +179,9 @@ def plot_recording(path):
         "Recorded values. All samples retained. "
         "Acceleration includes gravity.\n"
         "Corrected gyro shown when available. "
-        "Gyro panels use independent vertical scales.",
+        "Gyro panels use independent vertical scales.\n"
+        + ("Experimental barometer-only Kalman; IMU not fused."
+           if has_kalman else ""),
         ha="center",
         fontsize=10,
     )

@@ -1,0 +1,24 @@
+November 1, 2026 — software verification
+
+PASS: complete PlatformIO release build for teensy40, using existing
+project configuration and installed dependencies in an isolated copy.
+Teensy platform 5.1.0, framework-arduinoteensy 1.160.0,
+MS5611 0.5.2, Adafruit MPU6050 2.2.9.
+No device upload was performed.
+
+PASS: host numerical tests compiled with C++11 warnings enabled.
+3000 comparisons against an independent full-matrix implementation,
+with changing sampling intervals, and covariance checks.
+Invalid time/measurement handling and atmosphere conversion checked.
+Synthetic stationary test RMSE: raw 1.0082 m, filtered 0.3385 m.
+This synthetic result does not establish physical altitude accuracy.
+
+PASS: existing SEN002.CSV (10 columns) and CAL000.CSV (13 columns)
+accepted by the revised analyzer.
+PASS: generated 21-column replay of CAL000.CSV accepted and plotted;
+seven-panel plot visually inspected. Replay output is derived, not a
+new physical recording, and is not included as experimental evidence.
+
+Pending: hardware build/upload by Luna, first KAL recording/readback,
+measured-height comparisons, tuning, calibration, component diagnostics,
+sensor fusion, and flight validation.

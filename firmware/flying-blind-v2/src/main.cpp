@@ -5,6 +5,7 @@
 #include <Adafruit_Sensor.h>
 #include <SPI.h>
 #include <SD.h>
+#include "AltitudeKalman.h"
 
 MS5611 barometer(0x77);
 Adafruit_MPU6050 imu;
@@ -14,6 +15,8 @@ const uint32_t sampleIntervalMs = 1000;
 const uint32_t captureLimit = 60;
 
 bool barometerReady = false;
+bool barometerBeginOK = false;
+bool barometerResetOK = false;
 bool imuReady = false;
 bool sdReady = false;
 bool recordingReady = false;
@@ -24,17 +27,24 @@ uint32_t rowsWritten = 0;
 
 char sessionFilename[13] = "";
 
+AltitudeKalman altitudeFilter;
+double referencePressureMbar = 0.0;
+uint32_t lastFilterMs = 0;
+
 const char csvHeader[] =
     "sample,start_ms,pressure_mbar,temperature_c,"
     "ax_mps2,ay_mps2,az_mps2,gx_radps,gy_radps,gz_radps,"
-    "gx_radps_corrected,gy_radps_corrected,gz_radps_corrected\n";
+    "gx_radps_corrected,gy_radps_corrected,gz_radps_corrected,"
+    "reference_pressure_mbar,baro_altitude_m,kf_altitude_m,kf_velocity_mps,"
+    "kf_altitude_sigma_m,kf_velocity_sigma_mps,"
+    "kf_measurement_variance_m2,kf_acceleration_variance_m2s4\n";
 
 bool createSession()
 {
     for (unsigned int index = 0; index < 1000; index++)
     {
         snprintf(sessionFilename, sizeof(sessionFilename),
-                 "CAL%03u.CSV", index);
+                 "KAL%03u.CSV", index);
 
         if (SD.exists(sessionFilename))
         {
@@ -88,13 +98,14 @@ void setup()
     Wire.begin();
     Wire.setClock(100000);
 
-    barometerReady = barometer.begin();
+    barometerBeginOK = barometer.begin();
 
-    if (barometerReady)
+    if (barometerBeginOK)
     {
-        // Alternate calculation used by this barometer module.
-        barometerReady = barometer.reset(1);
+        barometerResetOK = barometer.reset(1);
     }
+
+    barometerReady = barometerBeginOK && barometerResetOK;
 
     imuReady = imu.begin(0x68, &Wire);
 
@@ -139,6 +150,19 @@ void loop()
         Serial.print("MPU6050 initialization: ");
         Serial.println(imuReady ? "SUCCESS" : "FAILED");
         Serial.println("Recording disabled.");
+        Serial.print("Barometer begin: ");
+        Serial.println(barometerBeginOK ? "PASSED" : "FAILED");
+
+        Serial.print("Barometer reset(1): ");
+        Serial.println(
+            !barometerBeginOK ? "NOT ATTEMPTED" :
+            (barometerResetOK ? "PASSED" : "FAILED"));
+
+        Wire.beginTransmission(0x77);
+        uint8_t barometerStatus = Wire.endTransmission();
+
+        Serial.print("Barometer address response: ");
+        Serial.println(barometerStatus);
         Serial.println();
         return;
     }
@@ -160,16 +184,53 @@ void loop()
         return;
     }
 
+    const double pressureMbar = barometer.getPressure();
+    if (!std::isfinite(pressureMbar) || pressureMbar <= 0.0)
+    {
+        Serial.println("ERROR: Invalid pressure. Sample not recorded.");
+        return;
+    }
+
+    // Experimental barometer-only estimator. IMU acceleration is logged,
+    // but NOT used as vertical acceleration before orientation validation.
+    if (!altitudeFilter.initialized())
+    {
+        referencePressureMbar = pressureMbar;
+        altitudeFilter.reset(0.0);
+        lastFilterMs = nowMs;
+    }
+
+    const double baroAltitudeM = relativeBarometricAltitudeM(
+        pressureMbar, referencePressureMbar);
+    if (!std::isfinite(baroAltitudeM))
+    {
+        Serial.println("ERROR: Invalid altitude. Sample not recorded.");
+        return;
+    }
+
+    if (nowMs != lastFilterMs)
+    {
+        // Unsigned subtraction also handles millis() rollover.
+        const double dtSeconds = uint32_t(nowMs - lastFilterMs) / 1000.0;
+        if (!altitudeFilter.update(baroAltitudeM, dtSeconds))
+        {
+            Serial.println("ERROR: Kalman update rejected. Sample not recorded.");
+            return;
+        }
+        lastFilterMs = nowMs;
+    }
+
     const double correctedGyroX = rotation.gyro.x - gyroOffsetX;
     const double correctedGyroY = rotation.gyro.y - gyroOffsetY;
     const double correctedGyroZ = rotation.gyro.z - gyroOffsetZ;
 
-    char row[256];
+    char row[512];
 
     int length = snprintf(
         row, sizeof(row),
         "%lu,%lu,%.2f,%.2f,%.3f,%.3f,%.3f,"
-        "%.9f,%.9f,%.9f,%.9f,%.9f,%.9f\n",
+        "%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,"
+        "%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f\n",
         (unsigned long)currentSample,
         (unsigned long)nowMs,
         barometer.getPressure(),
@@ -182,7 +243,15 @@ void loop()
         rotation.gyro.z,
         correctedGyroX,
         correctedGyroY,
-        correctedGyroZ);
+        correctedGyroZ,
+        referencePressureMbar,
+        baroAltitudeM,
+        altitudeFilter.altitudeM(),
+        altitudeFilter.velocityMps(),
+        altitudeFilter.altitudeSigmaM(),
+        altitudeFilter.velocitySigmaMps(),
+        AltitudeKalman::measurementVarianceM2,
+        AltitudeKalman::accelerationVarianceM2S4);
 
     if (length <= 0 || length >= (int)sizeof(row))
     {
@@ -193,6 +262,7 @@ void loop()
     // Display the same row that will be written to the card.
     Serial.print(csvHeader);
     Serial.println("Gyro calibration profile: SEN004-gyro-bias");
+    Serial.println("Altitude model: experimental barometer-only Kalman; IMU not fused");
     Serial.print(row);
 
     if (!recordingReady)
