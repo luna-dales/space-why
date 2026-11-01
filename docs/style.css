@@ -19,3 +19,21 @@
 .v2-results-table td{font-variant-numeric:tabular-nums}
 @media(max-width:900px){.v2-capability-grid{grid-template-columns:1fr;gap:24px}}
 @media(max-width:620px){.v2-results-table th,.v2-results-table td{padding:12px}.v2-results-table{font-size:.9375rem}}
+
+
+/* Crafting keeps the portfolio layout, with uncropped photos and readable videos. */
+.craft-jump{margin-bottom:8px}
+.craft-opening{padding-block:28px 42px}
+.craft-opening .process-grid{margin-top:0}
+.craft-gallery{margin-bottom:32px}
+.craft-gallery img{height:340px;object-fit:contain;background:var(--pale)}
+.craft-chapter{margin-top:48px}
+.craft-chapter>p{max-width:760px}
+.craft-more{border-top:1px solid var(--line);padding-top:22px;margin-top:32px}
+.craft-more summary{cursor:pointer;font-weight:650;color:var(--blue);padding:8px 0}
+.craft-more summary:focus-visible{outline:3px solid #df7900;outline-offset:5px}
+.craft-video-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;align-items:start}
+.craft-video{max-width:520px;margin-block:32px}
+.craft-video video{display:block;width:100%;height:auto;max-height:560px;background:var(--ink)}
+#crafting figure img{height:400px;object-fit:contain}
+@media(max-width:620px){.craft-video-grid{grid-template-columns:1fr;gap:8px}.craft-gallery img{height:360px}.craft-chapter{margin-top:36px}}
