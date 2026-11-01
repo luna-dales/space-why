@@ -1,8 +1,15 @@
+# Summarize a single saved session without modifying it or removing samples.
+# Usage: python analysis/analyze_csv.py data/KAL000.CSV
+# CSV headers are shared with plot_csv.py; keep their order aligned with
+# firmware. Statistics describe recorded variation, not absolute accuracy.
 import csv
 import math
 import statistics
 import sys
 from pathlib import Path
+# Original SEN format: attempt index, elapsed milliseconds, pressure in mbar,
+# barometer temperature in Celsius, gravity-inclusive acceleration in m/s^2,
+# and sensor-frame angular velocity in rad/s.
 
 COLUMNS = [
     "sample", "start_ms", "pressure_mbar", "temperature_c",
@@ -10,25 +17,35 @@ COLUMNS = [
     "gx_radps", "gy_radps", "gz_radps",
 ]
 
+# CAL sessions append fixed-bias-corrected gyro values, retaining raw values.
 CORRECTED_COLUMNS = [
     "gx_radps_corrected",
     "gy_radps_corrected",
     "gz_radps_corrected",
 ]
 
+# KAL sessions additionally retain the fixed pressure reference, barometric
+# and filtered relative heights, inferred velocity, model sigmas, and tuning.
+# Units are encoded in the column names; sigma is not a measured error bound.
 KALMAN_COLUMNS = [
     "reference_pressure_mbar", "baro_altitude_m", "kf_altitude_m",
     "kf_velocity_mps", "kf_altitude_sigma_m", "kf_velocity_sigma_mps",
     "kf_measurement_variance_m2", "kf_acceleration_variance_m2s4",
 ]
 
+# Accept exact known layouts. An unknown or reordered header needs an
+# explicit schema update rather than silently interpreting the wrong fields.
 SUPPORTED_COLUMNS = (
     COLUMNS,
     COLUMNS + CORRECTED_COLUMNS,
     COLUMNS + CORRECTED_COLUMNS + KALMAN_COLUMNS,
 )
 
+# Load and validate every row before reporting. Explicitly reject missing,
+# extra, nonnumeric, or non-finite fields rather than replacing them with zero.
 def analyze(path):
+    # utf-8-sig also accepts a UTF-8 byte-order mark; newline="" delegates
+    # CSV line-ending interpretation to the csv module.
     with path.open(newline="", encoding="utf-8-sig") as file:
         reader = csv.DictReader(file)
 
@@ -50,6 +67,8 @@ def analyze(path):
             if not all(math.isfinite(value) for value in row.values()):
                 raise ValueError(f"Non-finite number on line {line_number}.")
 
+            # Counts/timestamps are represented as floats for shared parsing,
+            # but must still be nonnegative whole numbers.
             for column in ("sample", "start_ms"):
                 if row[column] < 0 or not row[column].is_integer():
                     raise ValueError(
@@ -62,6 +81,9 @@ def analyze(path):
     if len(rows) < 2:
         raise ValueError("At least two samples are needed.")
 
+    # Sequence gaps can reveal rejected acquisition attempts. These checks
+    # REPORT continuity and timestamp order; false results do not abort the
+    # summary. start_ms is boot-relative, not a calendar timestamp.
     sample_steps = [
         current["sample"] - previous["sample"]
         for previous, current in zip(rows, rows[1:])
@@ -91,6 +113,9 @@ def analyze(path):
         f"{(rows[-1]['start_ms'] - rows[0]['start_ms']) / 1000:.3f}"
     )
 
+    # stdev uses the sample denominator n-1. It includes any motion, drift,
+    # and quantization present; no detrending, smoothing, or outlier removal
+    # is performed. Constant configuration columns naturally have zero spread.
     print("\nMeasurement,mean,sample_stddev,min,max")
 
     for column in columns[2:]:
@@ -103,6 +128,9 @@ def analyze(path):
             f"{max(values):.6f}"
         )
 
+    # Compute vector magnitude for EACH sample before taking its mean.
+    # This differs from the magnitude of the averaged vector. A stationary
+    # uncalibrated accelerometer should include gravity, not read all zeros.
     magnitudes = [
         math.sqrt(sum(row[column] ** 2
                       for column in ("ax_mps2", "ay_mps2", "az_mps2")))
@@ -124,6 +152,8 @@ def analyze(path):
     print("Gyro means estimate offsets only if the board was stationary.")
 
 
+# Importing this module only exposes the schemas and function. Command-line
+# work runs here; scripts importing the schemas do not print an extra report.
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         sys.exit("Usage: python3 analysis/analyze_csv.py data/SEN002.CSV")

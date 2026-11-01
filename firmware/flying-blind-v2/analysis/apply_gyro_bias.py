@@ -1,3 +1,7 @@
+# Apply an existing fixed gyro profile to an independent original SEN CSV.
+# Usage: python analysis/apply_gyro_bias.py data/SEN006.CSV analysis/SEN004-gyro-bias.json
+# The derived file adds corrected columns while preserving raw field strings.
+# This is offline validation, not a firmware upload or profile refit.
 import csv
 import json
 import math
@@ -10,12 +14,16 @@ from analyze_csv import COLUMNS
 GYRO_COLUMNS = ["gx_radps", "gy_radps", "gz_radps"]
 
 
+# Load the fixed profile, validate compatible units/schema, then subtract
+# each stored offset. Input files are never overwritten.
 def apply_bias(source, profile_path):
     profile = json.loads(profile_path.read_text(encoding="utf-8"))
 
     if profile["units"] != "rad/s":
         raise ValueError("Calibration units must be rad/s.")
 
+    # Reject the obvious same-filename calibration/validation case. This is
+    # not a content comparison: the operator must ensure independent capture.
     if profile["source_file"] == source.name:
         raise ValueError("Use an independent validation recording.")
 
@@ -30,6 +38,8 @@ def apply_bias(source, profile_path):
     with source.open(newline="", encoding="utf-8-sig") as file:
         reader = csv.DictReader(file)
 
+        # This tool intentionally accepts only original 10-column SEN data.
+        # It does not re-correct CAL/KAL data already containing corrections.
         if reader.fieldnames != COLUMNS:
             raise ValueError("Unexpected CSV columns.")
 
@@ -42,6 +52,8 @@ def apply_bias(source, profile_path):
         f"{column}_corrected" for column in GYRO_COLUMNS
     ]
 
+    # Validate before opening the output so bad source data does not create
+    # a partial derived file. All rows, including potential outliers, remain.
     for line_number, row in enumerate(rows, start=2):
         if None in row or any(
             row[column] in (None, "") for column in COLUMNS
@@ -51,6 +63,8 @@ def apply_bias(source, profile_path):
         if not all(math.isfinite(float(row[column])) for column in COLUMNS):
             raise ValueError(f"Invalid number on line {line_number}.")
 
+        # Convert only for calculation; original columns keep their text.
+        # A constant subtraction changes the mean, not standard deviation.
         for column in GYRO_COLUMNS:
             row[f"{column}_corrected"] = (
                 float(row[column]) - offsets[column]
@@ -73,6 +87,8 @@ def apply_bias(source, profile_path):
     print(f"Calibration profile: {profile_path.name}")
     print(f"Calibration recording: {profile['source_file']}")
     print(f"Samples: {len(rows)}")
+    # Residual means near zero support stationary offset transfer to this
+    # dataset. They do not establish dynamic accuracy or temperature coverage.
     print("\nAxis,raw_mean,offset,corrected_mean,corrected_sample_stddev")
 
     for column in GYRO_COLUMNS:
