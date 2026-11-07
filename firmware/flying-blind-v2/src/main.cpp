@@ -144,9 +144,8 @@ void setup()
 
     if (barometerBeginOK)
     {
-        // Alternate library pressure calculation selected for this module:
-        // default math previously produced approximately half the pressure.
-        // This selects a sensor-compatibility mode, not an altitude calibration.
+        // Our testing showed that the pressure readings were off.  Using reset(1) doubles the values returned
+        // which was closer to the expected values for our test site.
         barometerResetOK = barometer.reset(1);
     }
 
