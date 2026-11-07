@@ -174,17 +174,16 @@ void setup()
 
 void loop()
 {
+    // This saves our starting time as the number of ms since the Teensy started
     uint32_t nowMs = millis();
 
-    // Unsigned elapsed-time arithmetic tolerates one millis() wrap between
-    // checks. No catch-up burst is attempted after a long operation: the next
-    // interval starts from the current acquisition start. dt is not assumed
-    // to equal the requested interval inside the estimator.
+    // we only want to sample if the time since the last samping is >= to our sampling interval
     if (nowMs - lastSampleMs < sampleIntervalMs)
     {
         return;
     }
 
+    // Save our current sample time and sample index
     lastSampleMs = nowMs;
     uint32_t currentSample = sampleNumber++;
 
@@ -193,9 +192,7 @@ void loop()
     Serial.print(" | Start (ms since boot): ");
     Serial.println(nowMs);
 
-    // Report stored startup results. The address probe below is a separate
-    // current acknowledgment check: a response now does not establish that
-    // initialization succeeded earlier or that calibration data can be read.
+    // If one of our sensors isn't ready, then log the data
     if (!barometerReady || !imuReady)
     {
         Serial.print("Barometer initialization: ");
