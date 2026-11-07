@@ -217,17 +217,14 @@ void loop()
         return;
     }
 
-    // Reads are sequential, not simultaneous. nowMs identifies the start of
-    // this group; it is not the exact conversion instant of every sensor.
+    // Get the current barometer reading
     int barometerResult = barometer.read();
 
+    // Get the latest acceleration, rotation and temp
     sensors_event_t acceleration, rotation, imuTemperature;
-    bool imuReadOK =
-        imu.getEvent(&acceleration, &rotation, &imuTemperature);
+    bool imuReadOK = imu.getEvent(&acceleration, &rotation, &imuTemperature);
 
-    // A library-reported failure rejects the entire row. No stale row is
-    // substituted. The IMU library return is used as reported; this does not
-    // add an independent low-level transaction or sensor-validity check.
+    // If any reading fails, log and return
     if (barometerResult != MS5611_READ_OK || !imuReadOK)
     {
         Serial.print("Barometer read result: ");
@@ -239,6 +236,7 @@ void loop()
         return;
     }
 
+    // get latest pressure and return if invalid value
     const double pressureMbar = barometer.getPressure();
     if (!std::isfinite(pressureMbar) || pressureMbar <= 0.0)
     {
