@@ -20,20 +20,16 @@
 #include <SD.h>
 #include "AltitudeKalman.h"
 
-// I2C addresses verified on this assembly. Both devices share Wire/SDA/SCL;
-// their numeric addresses are unrelated to Teensy physical pin numbers.
+// I2C addresses. Both devices share Wire/SDA/SCL;
 MS5611 barometer(0x77);
 Adafruit_MPU6050 imu;
 
-// External SPI card: CS=10, MOSI=11, MISO=12, SCK=13.
-// Changing captureLimit affects saved rows, not the live sampling duration.
+// External SPI card Pins: CS=10, MOSI=11, MISO=12, SCK=13.
 const uint8_t sdChipSelect = 10;
 const uint32_t sampleIntervalMs = 1000;
 const uint32_t captureLimit = 60;
 
-// These remember setup results. Separate begin/reset flags identify which
-// barometer initialization stage failed; they are not live health checks.
-// recordingReady also becomes false after an append failure.
+// Status flags
 bool barometerReady = false;
 bool barometerBeginOK = false;
 bool barometerResetOK = false;
@@ -43,7 +39,7 @@ bool recordingReady = false;
 
 // sampleNumber counts scheduled attempts, including rejected measurements.
 // rowsWritten counts successful appends, so gaps in saved sample numbers
-// reveal skipped attempts. millis() timestamps are elapsed time, not dates.
+// reveal skipped attempts. 
 uint32_t sampleNumber = 0;
 uint32_t lastSampleMs = 0;
 uint32_t rowsWritten = 0;
@@ -69,21 +65,22 @@ const char csvHeader[] =
     "kf_altitude_sigma_m,kf_velocity_sigma_mps,"
     "kf_measurement_variance_m2,kf_acceleration_variance_m2s4\n";
 
-// Select the first unused KAL000.CSV..KAL999.CSV, create its header, and close
-// it. Existing recordings are skipped. Failure (including an exhausted name
-// range) leaves recording disabled. The header's terminating null is not saved.
+// Select the first unused KAL000.CSV..KAL999.CSV, create its header, and close it.
 bool createSession()
 {
+    //  Loop through possible file indexes
     for (unsigned int index = 0; index < 1000; index++)
     {
-        snprintf(sessionFilename, sizeof(sessionFilename),
-                 "KAL%03u.CSV", index);
+        // Assemble file name
+        snprintf(sessionFilename, sizeof(sessionFilename), "KAL%03u.CSV", index);
 
+        // If this file exists move onto the next index
         if (SD.exists(sessionFilename))
         {
             continue;
         }
 
+        // Make sure the file can be opened
         File file = SD.open(sessionFilename, FILE_WRITE);
 
         if (!file)
@@ -91,6 +88,7 @@ bool createSession()
             return false;
         }
 
+        // Make sure the file can be written to
         size_t written = file.print(csvHeader);
         file.close();
 
@@ -100,10 +98,7 @@ bool createSession()
     return false;
 }
 
-// Append exactly length bytes, then close the file after each row. This
-// simple bench strategy trades throughput for frequent filesystem updates;
-// it is not buffered high-rate logging or a guarantee against power-loss
-// corruption. The return value checks the accepted byte count, not a readback.
+// Append a row, then close the file.
 bool appendRow(const char *row, size_t length)
 {
     File file = SD.open(sessionFilename, FILE_WRITE);
@@ -113,22 +108,18 @@ bool appendRow(const char *row, size_t length)
         return false;
     }
 
-    size_t written = file.write(
-        reinterpret_cast<const uint8_t *>(row), length);
+    size_t written = file.write(reinterpret_cast<const uint8_t *>(row), length);
 
     file.close();
     return written == length;
 }
 
-// Fixed profile: analysis/SEN004-gyro-bias.json
-// Units: rad/s. Rounded to nine decimal places.
+// Bias values from sensor testing
 const double gyroOffsetX = -0.051916667;
 const double gyroOffsetY =  0.014250000;
 const double gyroOffsetZ = -0.016633333;
 
-// Run once per boot/upload. Neither sensor initialization nor session
-// creation is retried here. Gyro offsets above are fixed copied constants;
-// firmware does not read the JSON calibration profile from the SD card.
+// Initialize system and validate sensors are up and functional
 void setup()
 {
     Serial.begin(115200);
@@ -140,6 +131,7 @@ void setup()
     Wire.begin();
     Wire.setClock(100000);
 
+    // Initialize the barometer
     barometerBeginOK = barometer.begin();
 
     if (barometerBeginOK)
@@ -151,6 +143,7 @@ void setup()
 
     barometerReady = barometerBeginOK && barometerResetOK;
 
+    // Initialize the IMU
     imuReady = imu.begin(0x68, &Wire);
 
     if (imuReady)
@@ -161,8 +154,7 @@ void setup()
         imu.setFilterBandwidth(MPU6050_BAND_21_HZ);
     }
 
-    // SD.begin() checks card/filesystem access; it does not prove a write.
-    // createSession() checks a header write after both sensors initialize.
+    // Initialize the SD Card
     sdReady = SD.begin(sdChipSelect);
 
     // Create a recording only if both sensors initialized.
@@ -172,6 +164,7 @@ void setup()
     }
 }
 
+// Continual loop
 void loop()
 {
     // This saves our starting time as the number of ms since the Teensy started
@@ -244,11 +237,7 @@ void loop()
         return;
     }
 
-    // Experimental barometer-only estimator. IMU acceleration is logged,
-    // but NOT used as vertical acceleration before orientation validation.
-    // First accepted combined sample defines relative zero. Its pressure
-    // noise shifts the reference for the entire session. The same sample
-    // initializes the state and is not counted as a second correction.
+    // Set base values the first time 
     if (!altitudeFilter.initialized())
     {
         referencePressureMbar = pressureMbar;
@@ -256,17 +245,17 @@ void loop()
         lastFilterMs = nowMs;
     }
 
-    const double baroAltitudeM = relativeBarometricAltitudeM(
-        pressureMbar, referencePressureMbar);
+    // Get the altitude from the barometric pressure
+    const double baroAltitudeM = relativeBarometricAltitudeM(pressureMbar, referencePressureMbar);
+
+    // Make sure the value makes sense
     if (!std::isfinite(baroAltitudeM))
     {
         Serial.println("ERROR: Invalid altitude. Sample not recorded.");
         return;
     }
 
-    // After skipped reads, elapsed time spans the whole gap. No prediction-
-    // only records are emitted during that gap; the next accepted observation
-    // advances and corrects the estimator. Sensor failures remain unresolved.
+    // Update the Kalman values
     if (nowMs != lastFilterMs)
     {
         // Unsigned subtraction also handles millis() rollover.
@@ -279,15 +268,12 @@ void loop()
         lastFilterMs = nowMs;
     }
 
-    // Preserve raw gyro alongside raw-minus-offset. This changes the mean,
-    // not random variation, and does not correct accelerometer readings.
+    // Preserve raw gyro alongside raw-minus-offset. 
     const double correctedGyroX = rotation.gyro.x - gyroOffsetX;
     const double correctedGyroY = rotation.gyro.y - gyroOffsetY;
     const double correctedGyroZ = rotation.gyro.z - gyroOffsetZ;
 
-    // snprintf() reports the length that WOULD have been written. Reject
-    // truncation rather than storing a shortened/malformed CSV row. Extra
-    // printed decimals aid software comparisons; they do not imply accuracy.
+    // Assemble our data for this snapshot
     char row[512];
 
     int length = snprintf(
@@ -326,7 +312,6 @@ void loop()
     // Display the same row that will be written to the card.
     Serial.print(csvHeader);
     Serial.println("Gyro calibration profile: SEN004-gyro-bias");
-    Serial.println("Altitude model: experimental barometer-only Kalman; IMU not fused");
     Serial.print(row);
 
     // Serial output is available even when storage is unavailable. Human-
