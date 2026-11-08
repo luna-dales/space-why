@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Google Analytics: same measurement ID as the rest of Luna's site. -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-DYVTEDY464"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-DYVTEDY464');
+  </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="WhereIsIt is Luna Dales' accessible iPhone grocery locator prototype using AI-assisted shelf recognition, crowdsourced observations, voice search, and spoken locations.">
+  <title>WhereIsIt | Luna Dales' Engineering Portfolio</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <style>
+    /* Page-specific rules; existing site colors, typography, and navigation remain in style.css. */
+    .wi-lead { max-width: 760px; }
+    .wi-subnav { display: flex; flex-wrap: wrap; gap: .65rem 1.2rem; margin: 1.4rem 0 0; }
+    .wi-subnav a { text-underline-offset: .18em; }
+    .wi-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2.5rem; align-items: start; }
+    .wi-layout > * { min-width: 0; }
+    .wi-gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .wi-gallery figure { margin: 0; min-width: 0; }
+    .wi-gallery a { display: block; border-radius: 14px; overflow: hidden; }
+    .wi-gallery img { display: block; width: 100%; max-height: 360px; height: auto; object-fit: contain; border: 1px solid #9996; border-radius: 14px; background: #fff; }
+    .wi-gallery figcaption { text-align: center; font-size: .9rem; padding-top: .45rem; }
+    .wi-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.1rem; }
+    .wi-step { padding: 1.3rem; border: 1px solid #8885; border-radius: 16px; }
+    .wi-step h3 { margin-top: .25rem; }
+    .wi-tags { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0; }
+    .wi-tags span { border: 1px solid #8887; border-radius: 100px; padding: .35rem .7rem; font-size: .9rem; }
+    .wi-photo { max-width: 480px; margin-inline: auto; }
+    .wi-photo img { display: block; width: 100%; height: auto; border-radius: 14px; }
+    .wi-photo figcaption { margin-top: .5rem; font-size: .9rem; }
+    .wi-note { font-size: .94rem; }
+    .wi-prose p, .wi-prose li { line-height: 1.75; }
+    .wi-prose ul { padding-left: 1.35rem; }
+    .wi-prose li { margin-bottom: .5rem; }
+    .wi-cta { display: flex; gap: .8rem; flex-wrap: wrap; align-items: center; }
+    @media (max-width: 800px) { .wi-layout, .wi-steps { grid-template-columns: 1fr; } .wi-gallery { max-width: 650px; } }
+    @media (max-width: 420px) { .wi-gallery { gap: .5rem; } .wi-gallery figcaption { font-size: .8rem; } }
+  </style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="header-inner">
+  <a class="brand" href="index.html">Space Why?<span>Luna Dales / Engineering and Crafting Portfolio</span></a>
+  <nav aria-label="Main navigation">
+    <a href="index.html">Overview</a>
+    <a href="flying-blind.html">Flying Blind</a>
+    <a href="zephyr.html">L1 Zephyr</a>
+    <a href="tvc.html">TVC platform</a>
+    <a href="whereisit.html" aria-current="page">WhereIsIt</a>
+    <a href="crafting.html">Crafting</a>
+    <a href="about.html">About Me/Resume</a>
+  </nav>
+</div></header>
+<main id="main">
+
+<section class="wrap section">
+  <p class="eyebrow">Software engineering / AI / Accessibility</p>
+  <h1>WhereIsIt</h1>
+  <div class="wi-lead wi-prose">
+    <p class="intro">Finding an item in a grocery store should not depend on being able to read every label on a crowded shelf.</p>
+    <p>WhereIsIt is an iPhone app I've been developing to help people with low vision find grocery products. It combines AI-assisted recognition of shelf photographs, crowdsourced product locations, and accessible ways to search and hear results.</p>
+    <p>The prototype works end to end: a user can photograph a shelf, review recognized products, save their locations, and search for those products later.</p>
+    <div class="wi-cta"><a class="button" href="https://github.com/luna-dales/where-is-it">Explore the code and README</a></div>
+    <nav class="wi-subnav" aria-label="On this page">
+      <a href="#how-it-works">How it works</a>
+      <a href="#screenshots">Screenshots</a>
+      <a href="#accessibility">Accessibility</a>
+      <a href="#engineering">Engineering</a>
+      <a href="#next-steps">Next steps</a>
+    </nav>
+  </div>
+</section>
+
+<section class="band"><div class="wrap status-grid">
+  <div><span class="eyebrow">Platform</span><strong>iPhone prototype</strong><p>Built with Swift and SwiftUI</p></div>
+  <div><span class="eyebrow">Recognition</span><strong>AI + human review</strong><p>Editable results from shelf photographs</p></div>
+  <div><span class="eyebrow">Access</span><strong>Designed for low vision</strong><p>Voice search, spoken results, VoiceOver, and text settings</p></div>
+</div></section>
+
+<section class="wrap section" id="how-it-works">
+  <div class="section-heading"><p class="eyebrow">The idea</p><h2>From a shelf photo to a usable location</h2></div>
+  <div class="wi-steps wi-prose">
+    <div class="wi-step"><span class="eyebrow">01 / Contribute</span><h3>Photograph a shelf</h3><p>A user selects the store, aisle, and side, then takes or chooses a photograph of grocery products.</p></div>
+    <div class="wi-step"><span class="eyebrow">02 / Check</span><h3>Review AI results</h3><p>The app asks an AI model to identify products and estimate where they appear. Users can correct names or remove mistakes before saving.</p></div>
+    <div class="wi-step"><span class="eyebrow">03 / Find</span><h3>Search and locate</h3><p>Another shopper searches by product name or brand, sees its recorded location, and can view the shelf image or hear the location aloud.</p></div>
+  </div>
+  <p class="wi-note">Product positions are estimates based on contributed photographs. A shopper's review is important because AI recognition is not always correct.</p>
+</section>
+
+<section class="wrap section" id="screenshots">
+  <div class="section-heading"><p class="eyebrow">Working prototype</p><h2>The app in use</h2></div>
+  <div class="wi-layout">
+    <div class="wi-prose">
+      <h3>Designed around a simple task</h3>
+      <p>The home screen separates the two main tasks: contributing shelf information and finding a product. Search results show the recorded location, while a separate view displays the original shelf photograph for visual reference.</p>
+      <p>The settings screen gives users control over text size and appearance. Speech input and spoken location information provide alternatives to reading small product labels.</p>
+      <p>Click or tap any screenshot to open the full-size image.</p>
+      <p><a href="https://github.com/luna-dales/where-is-it#screenshots">See additional screenshots on GitHub</a></p>
+    </div>
+    <div class="wi-gallery">
+      <figure><a href="https://raw.githubusercontent.com/luna-dales/where-is-it/main/docs/screenshots/app-home.png" aria-label="Open home screen screenshot"><img src="https://raw.githubusercontent.com/luna-dales/where-is-it/main/docs/screenshots/app-home.png" alt="WhereIsIt iPhone home screen" loading="lazy"></a><figcaption>Home</figcaption></figure>
+      <figure><a href="https://raw.githubusercontent.com/luna-dales/where-is-it/main/docs/screenshots/find-product.png" aria-label="Open product search screenshot"><img src="https://raw.githubusercontent.com/luna-dales/where-is-it/main/docs/screenshots/find-product.png" alt="WhereIsIt product search screen" loading="lazy"></a><figcaption>Search</figcaption></figure>
+      <figure><a href="https://raw.githubusercontent.com/luna-dales/where-is-it/main/docs/screenshots/found-product.png" aria-label="Open results screenshot"><img src="https://raw.githubusercontent.com/luna-dales/where-is-it/main/docs/screenshots/found-product.png" alt="WhereIsIt product search results" loading="lazy"></a><figcaption>Results</figcaption></figure>
+      <figure><a href="https://raw.githubusercontent.com/luna-dales/where-is-it/main/docs/screenshots/settings-page.png" aria-label="Open settings screenshot"><img src="https://raw.githubusercontent.com/luna-dales/where-is-it/main/docs/screenshots/settings-page.png" alt="WhereIsIt accessibility and display settings" loading="lazy"></a><figcaption>Settings</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section class="dark-section" id="accessibility"><div class="wrap split">
+  <div><p class="eyebrow">Accessibility by design</p><h2>More than a visual search result</h2></div>
+  <div class="prose wi-prose">
+    <p>Because I have low vision, I'm interested in software that offers different ways to access the same information. WhereIsIt explores how familiar phone features can support the everyday task of locating groceries.</p>
+    <ul>
+      <li><strong>Speak to search:</strong> Search for products using voice input.</li>
+      <li><strong>Hear the location:</strong> Have recorded aisle and shelf information spoken aloud.</li>
+      <li><strong>VoiceOver:</strong> Navigate the app with Apple's screen reader.</li>
+      <li><strong>Text and appearance:</strong> Adjust in-app text sizes and select light or dark appearance.</li>
+      <li><strong>Shelf photographs:</strong> Use a visual reference when it helps, rather than relying only on an aisle number.</li>
+    </ul>
+    <p>These features work in the prototype, but broader testing with people with different visual abilities is still a future goal.</p>
+  </div>
+</div></section>
+
+<section class="wrap section" id="engineering">
+  <div class="section-heading"><p class="eyebrow">Engineering behind the app</p><h2>Connecting iOS, AI, and a shared database</h2></div>
+  <div class="wi-layout">
+    <div class="wi-prose">
+      <h3>What happens behind the scenes</h3>
+      <p>The SwiftUI app sends a shelf photograph to a Supabase Edge Function. The function calls OpenAI's GPT-5.4 model to identify visible grocery products and approximate their positions. The results return to the phone for review.</p>
+      <p>Approved observations are saved in PostgreSQL, and photographs are stored in a private Supabase Storage bucket. A product-search view combines product and store data so another authenticated user can retrieve a location and its linked photograph.</p>
+      <p>Supabase authentication and access policies control requests to the database and stored images. The project is still a prototype, so security and deployment procedures need additional review before a broad release.</p>
+      <h3>Tools and technologies</h3>
+      <div class="wi-tags" aria-label="Technologies used"><span>SwiftUI</span><span>Swift</span><span>Supabase</span><span>PostgreSQL</span><span>TypeScript</span><span>OpenAI GPT-5.4</span><span>Apple Speech</span><span>VoiceOver</span></div>
+    </div>
+    <figure class="wi-photo"><a href="https://raw.githubusercontent.com/luna-dales/where-is-it/main/docs/screenshots/product-location.jpg"><img src="https://raw.githubusercontent.com/luna-dales/where-is-it/main/docs/screenshots/product-location.jpg" alt="WhereIsIt shelf photograph with product location information" loading="lazy"></a><figcaption>A saved shelf image provides additional context for a product's recorded location. Open the image to inspect it at full size.</figcaption></figure>
+  </div>
+</section>
+
+<section class="wrap section split" id="next-steps">
+  <div><p class="eyebrow">Iteration and next steps</p><h2>What still needs work</h2></div>
+  <div class="prose wi-prose">
+    <p>Building a useful prototype has also made the limitations clearer. AI can recognize many products, but busy shelves make exact product boundaries and positions difficult to estimate consistently.</p>
+    <p>My next goals include improving bounding-box accuracy, testing product matching across different packaging and photos, making the app easier to use with large text and speech, and strengthening privacy and reliability before considering wider use.</p>
+    <p>One important part of the design is allowing people to correct AI-generated identifications before the observations enter the shared database. The application should treat AI as a tool that assists shoppers, not as a source that is always right.</p>
+  </div>
+</section>
+
+<section class="wrap next">
+  <p class="eyebrow">Explore the project</p>
+  <h2>Working app, documented code, ongoing experiments</h2>
+  <p>The repository contains the SwiftUI application, Supabase Edge Functions, screenshots, and database SQL snapshots. The SQL snapshots have not yet been validated as a complete fresh-install migration sequence.</p>
+  <div class="wi-cta"><a class="button" href="https://github.com/luna-dales/where-is-it">View the WhereIsIt repository</a><a href="index.html#projects">Return to portfolio</a></div>
+  <p class="wi-note">I used AI as a development and writing assistant while working on the app and this website. The project is an experimental prototype, not a production service.</p>
+</section>
+
+</main>
+<footer><div><strong>Space Why?</strong><p>Luna Dales / Engineering and Crafting Portfolio</p></div><div><a href="https://github.com/luna-dales/space-why">Space Why repository</a><p><a href="https://github.com/luna-dales/where-is-it">WhereIsIt repository</a></p><p>Website developed with help from AI for writing, coding, and layout.</p></div></footer>
+</body>
+</html>
