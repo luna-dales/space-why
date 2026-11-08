@@ -21,11 +21,15 @@
     .portfolio-intro .eyebrow { margin-bottom: 1rem; }
     .portfolio-intro h1 { max-width: 16ch; font-size: clamp(2.4rem, 5.2vw, 5rem); line-height: 1.08; margin: 0 0 1.1rem; }
     .portfolio-intro .intro { max-width: 66ch; }
-    .featured-projects { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: clamp(1rem,3vw,2rem); margin-top: 2rem; }
+    .featured-projects { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: clamp(1rem,2.2vw,1.7rem); margin-top: 2rem; }
     .feature-card { border: 1px solid #8885; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; background: var(--surface, transparent); }
     .feature-media { display: block; position: relative; background: #20272a; height: clamp(230px,30vw,360px); overflow: hidden; }
     .feature-media > img { display: block; width: 100%; height: 100%; object-fit: cover; }
     .feature-media.rocket > img { object-position: center 32%; }
+    .feature-media.craft { background: linear-gradient(135deg,#41343e,#756459); display: flex; align-items: center; justify-content: center; padding: 1.4rem; }
+    .craft-art { color: #fff9ed; width: 100%; max-width: 330px; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .6rem; transform: rotate(-3deg); }
+    .craft-art span { display: flex; align-items: center; justify-content: center; text-align: center; min-height: 96px; padding: 1rem; border: 1px solid #fff7; border-radius: 15px; font-family: Georgia, serif; font-size: clamp(1.1rem,2.2vw,1.65rem); background: #ffffff13; }
+    .craft-art span:last-child { grid-column: 1 / -1; min-height: 78px; }
     .feature-media.app { display: flex; justify-content: center; align-items: center; background: linear-gradient(130deg,#19374b,#466a70); }
     .feature-media.app img { width: auto; max-width: 80%; height: 90%; object-fit: contain; border-radius: 10px; }
     .feature-copy { padding: clamp(1.25rem,3vw,2rem); flex: 1; display: flex; flex-direction: column; align-items: start; }
@@ -37,12 +41,12 @@
     .portfolio-project-note { max-width: 70ch; }
     .portfolio-link-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; }
     .portfolio-link-row a { text-underline-offset: .2em; }
-    .crafting-preview { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 2rem; align-items: start; }
     @media (max-width: 780px) {
-      .featured-projects, .crafting-preview { grid-template-columns: 1fr; }
+      .featured-projects { grid-template-columns: 1fr; }
       .feature-media { height: 300px; }
       .portfolio-intro { padding-top: 2.5rem; }
     }
+    @media (min-width: 781px) and (max-width: 1100px) { .featured-projects { grid-template-columns: repeat(2,minmax(0,1fr)); } .featured-projects .feature-card:last-child { grid-column: 1 / -1; } }
     @media (prefers-reduced-motion: no-preference) {
       .feature-card { transition: transform .16s ease, box-shadow .16s ease; }
       .feature-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px #0002; }
@@ -66,11 +70,11 @@
 <main id="main">
 
 <section class="wrap portfolio-intro" aria-labelledby="portfolio-title">
-  <p class="eyebrow">Aerospace engineering · Software · Accessibility</p>
+  <p class="eyebrow">Engineering · Software · Crafting · Accessibility</p>
   <h1 id="portfolio-title">I learn by building.</h1>
   <p class="intro">I'm Luna. I like taking questions that interest me and turning them into real things I can build, test, and improve.</p>
-  <p class="portfolio-project-note">My work ranges from designing rocket flight computers to creating an iPhone app that helps people with low vision find groceries. Each project has taught me something different about making technology useful.</p>
-  <div class="featured-projects" aria-label="Featured engineering projects">
+  <p class="portfolio-project-note">My projects range from rocket flight computers to an accessible grocery-finding app to the crafts I make and teach. Each one gives me a different way to solve problems, practice new skills, and share what I learn.</p>
+  <div class="featured-projects" aria-label="Featured projects">
     <article class="feature-card">
       <a class="feature-media rocket" href="#space-why" aria-label="Explore Space Why">
         <img src="assets/zephyr-finished.jpg" alt="Luna beside her assembled Zephyr rocket" width="900" height="1200">
@@ -95,13 +99,25 @@
         <a class="button" href="whereisit.html">Explore WhereIsIt</a>
       </div>
     </article>
+    <article class="feature-card">
+      <a class="feature-media craft" href="crafting.html" aria-label="Explore Luna's crafting work">
+        <div class="craft-art" aria-hidden="true"><span>Crochet</span><span>Jewelry</span><span>Baking &amp; sharing</span></div>
+      </a>
+      <div class="feature-copy">
+        <span class="eyebrow">03 / Craftsmanship &amp; teaching</span>
+        <h2>Crafting</h2>
+        <p>Baking, crochet, and metal jewelry are another way I learn by making. I practice techniques, create things to share, and teach skills to younger family members and campers.</p>
+        <p class="feature-details">Crochet · Baking · Wirework · Teaching</p>
+        <a class="button" href="crafting.html">Explore Crafting</a>
+      </div>
+    </article>
   </div>
 </section>
 
 <section class="band" aria-label="Engineering milestones"><div class="wrap status-grid">
   <div><span class="eyebrow">Flight computing</span><strong>3 hardware generations</strong><p>V1–V3 electronics · V2 sensor recording verified</p></div>
   <div><span class="eyebrow">High-power rocketry</span><strong>M1 certification earned</strong><p>Zephyr certification flight with Tripoli</p></div>
-  <div><span class="eyebrow">Accessible software</span><strong>Working iPhone prototype</strong><p>WhereIsIt tested on two phones with shared product locations</p></div>
+  <div><span class="eyebrow">Software</span><strong>Working iPhone prototype</strong><p>WhereIsIt tested on two phones with shared product locations</p></div>
 </div></section>
 
 <section class="wrap section" id="space-why">
@@ -124,10 +140,7 @@
   <div class="prose"><p>My experience with low vision has shaped the kinds of problems I want to solve. In Space Why, I'm exploring ways to make flight data easier to read and hear. With WhereIsIt, I applied accessibility ideas to a familiar everyday task.</p><p>Both are ongoing explorations: the flight-data viewer is an early prototype, while the WhereIsIt iPhone app has a working photograph-to-search workflow. <a href="whereisit.html">See how WhereIsIt works</a>.</p></div>
 </div></section>
 
-<section class="wrap section" id="crafting">
-  <div class="section-heading"><p class="eyebrow">Beyond software and rockets</p><h2>Crafting, making, and teaching</h2></div>
-  <div class="crafting-preview"><div><p>I grew up among talented crafters, bakers, and artists. My crafting story follows baking with my grandmother, developing independence through adult classes, and now teaching younger family members.</p><a class="button" href="crafting.html">Explore my crafting</a></div><div class="prose"><h3>Things I make and share</h3><p>Crochet began as a shared interest with my sister and grew into amigurumi projects, NOAH fundraising, and teaching at summer camp. Metal jewelry making adds a progression from simple bracelets to complex wirework.</p><p>These are skills and interests I can carry through life.</p></div></div>
-</section>
+
 
 <section class="wrap section split" id="contributions">
   <div><p class="eyebrow">Contributions &amp; support</p><h2>What I did, and how I learned</h2></div>
@@ -140,7 +153,7 @@
   </div>
 </section>
 
-<section class="wrap next"><p class="eyebrow">What comes next</p><h2>Keep testing. Keep improving.</h2><p>For Space Why, I'm working toward better sensor calibration, altitude estimation, and future control experiments. For WhereIsIt, the next challenges include improving product-position accuracy, refining accessibility, and testing the app more broadly.</p><div class="portfolio-link-row"><a href="flying-blind.html">Flying Blind progress</a><a href="whereisit.html#next-steps">WhereIsIt next steps</a></div></section>
+<section class="wrap next"><p class="eyebrow">What comes next</p><h2>Keep learning. Keep making.</h2><p>For Space Why, I'm working toward better sensor calibration, altitude estimation, and future control experiments. For WhereIsIt, the next challenges include improving product-position accuracy, refining accessibility, and testing the app more broadly. In crafting, I want to keep exploring new techniques and sharing what I learn.</p><div class="portfolio-link-row"><a href="flying-blind.html">Flying Blind progress</a><a href="whereisit.html#next-steps">WhereIsIt next steps</a><a href="crafting.html">Crafting projects</a></div></section>
 </main>
 <footer><div><strong>Luna Dales</strong><p>Engineering and Crafting Portfolio</p></div><div><a href="https://github.com/luna-dales/space-why">Space Why repository</a><p><a href="https://github.com/luna-dales/where-is-it">WhereIsIt repository</a></p><p>Website developed with help from AI for writing, coding, and layout.</p></div></footer>
 </body>
