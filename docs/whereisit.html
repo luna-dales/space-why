@@ -47,7 +47,7 @@
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header"><div class="header-inner">
-  <a class="brand" href="index.html">Space Why?<span>Luna Dales / Engineering and Crafting Portfolio</span></a>
+  <a class="brand" href="index.html">Luna Dales<span>Engineering and Crafting Portfolio</span></a>
   <nav aria-label="Main navigation">
     <a href="index.html">Overview</a>
     <a href="flying-blind.html">Flying Blind</a>
@@ -66,13 +66,14 @@
   <div class="wi-lead wi-prose">
     <p class="intro">Finding an item in a grocery store should not depend on being able to read every label on a crowded shelf.</p>
     <p>WhereIsIt is an iPhone app I've been developing to help people with low vision find grocery products. It combines AI-assisted recognition of shelf photographs, crowdsourced product locations, and accessible ways to search and hear results.</p>
-    <p>The prototype works end to end: a user can photograph a shelf, review recognized products, save their locations, and search for those products later.</p>
+    <p>The prototype works end to end: a user can photograph a shelf, review recognized products, save their locations, and search for those products later. I have also tested viewing a contributed shelf photograph across two different iPhones.</p>
     <div class="wi-cta"><a class="button" href="https://github.com/luna-dales/where-is-it">Explore the code and README</a></div>
     <nav class="wi-subnav" aria-label="On this page">
       <a href="#how-it-works">How it works</a>
       <a href="#screenshots">Screenshots</a>
       <a href="#accessibility">Accessibility</a>
       <a href="#engineering">Engineering</a>
+      <a href="#challenges">Engineering lessons</a>
       <a href="#next-steps">Next steps</a>
     </nav>
   </div>
@@ -143,6 +144,16 @@
   </div>
 </section>
 
+<section class="wrap section" id="challenges">
+  <div class="section-heading"><p class="eyebrow">Engineering lessons</p><h2>Making a working prototype meant solving real problems</h2></div>
+  <div class="wi-steps wi-prose">
+    <div class="wi-step"><span class="eyebrow">Challenge / 01</span><h3>Recognition needs review</h3><p>AI can identify many products in a photograph, but errors in names and product positions are possible. I built a review step so people can correct or remove suggestions before adding them to the shared database.</p></div>
+    <div class="wi-step"><span class="eyebrow">Challenge / 02</span><h3>Sharing photos securely</h3><p>A product observed on one phone needs to be visible on another. During testing, one phone could view its own shelf photo while the other received an “Object not found” error. We traced this to a Supabase Storage policy, corrected the permitted read operations, and verified that the photo appeared on both phones.</p></div>
+    <div class="wi-step"><span class="eyebrow">Challenge / 03</span><h3>Making results usable</h3><p>Finding a product is not only about showing its name on a screen. I incorporated voice search, spoken location details, VoiceOver, and text-size choices so people can use more than one way to access the same information.</p></div>
+  </div>
+  <p class="wi-note">The prototype has been tested on two iPhones. That is an early functional check, not a substitute for usability testing with a broader range of shoppers.</p>
+</section>
+
 <section class="wrap section split" id="next-steps">
   <div><p class="eyebrow">Iteration and next steps</p><h2>What still needs work</h2></div>
   <div class="prose wi-prose">
@@ -161,6 +172,6 @@
 </section>
 
 </main>
-<footer><div><strong>Space Why?</strong><p>Luna Dales / Engineering and Crafting Portfolio</p></div><div><a href="https://github.com/luna-dales/space-why">Space Why repository</a><p><a href="https://github.com/luna-dales/where-is-it">WhereIsIt repository</a></p><p>Website developed with help from AI for writing, coding, and layout.</p></div></footer>
+<footer><div><strong>Luna Dales</strong><p>Engineering and Crafting Portfolio</p></div><div><a href="https://github.com/luna-dales/space-why">Space Why repository</a><p><a href="https://github.com/luna-dales/where-is-it">WhereIsIt repository</a></p><p>Website developed with help from AI for writing, coding, and layout.</p></div></footer>
 </body>
 </html>

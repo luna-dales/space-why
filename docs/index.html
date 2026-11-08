@@ -1,8 +1,7 @@
-
 <!doctype html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
+  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-DYVTEDY464"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -10,448 +9,139 @@
     gtag('js', new Date());
     gtag('config', 'G-DYVTEDY464');
   </script>
-
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-
-  <title>Luna Dales’ Engineering and Crafting Portfolio | Space Why?</title>
-
-  <meta name="description"
-        content="Luna Dales' engineering portfolio featuring Space Why rocketry, custom flight computers, an AI-powered accessible grocery locator app, and crafting projects.">
-
+  <title>Luna Dales | Engineering &amp; Crafting Portfolio</title>
+  <meta name="description" content="Luna Dales' engineering portfolio: Space Why rocketry and custom flight computers, WhereIsIt accessible iPhone app, and hands-on crafting projects.">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <style>
+    /* Homepage-specific layout; shared site typography and navigation come from style.css. */
+    .portfolio-intro { padding-block: clamp(3rem, 7vw, 6rem) 2rem; }
+    .portfolio-intro .eyebrow { margin-bottom: 1rem; }
+    .portfolio-intro h1 { max-width: 16ch; font-size: clamp(2.4rem, 5.2vw, 5rem); line-height: 1.08; margin: 0 0 1.1rem; }
+    .portfolio-intro .intro { max-width: 66ch; }
+    .featured-projects { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: clamp(1rem,3vw,2rem); margin-top: 2rem; }
+    .feature-card { border: 1px solid #8885; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; background: var(--surface, transparent); }
+    .feature-media { display: block; position: relative; background: #20272a; height: clamp(230px,30vw,360px); overflow: hidden; }
+    .feature-media > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .feature-media.rocket > img { object-position: center 32%; }
+    .feature-media.app { display: flex; justify-content: center; align-items: center; background: linear-gradient(130deg,#19374b,#466a70); }
+    .feature-media.app img { width: auto; max-width: 80%; height: 90%; object-fit: contain; border-radius: 10px; }
+    .feature-copy { padding: clamp(1.25rem,3vw,2rem); flex: 1; display: flex; flex-direction: column; align-items: start; }
+    .feature-copy h2 { margin: .4rem 0 .8rem; font-size: clamp(1.6rem,2.8vw,2.3rem); }
+    .feature-copy p { line-height: 1.7; }
+    .feature-copy .button { margin-top: auto; }
+    .feature-copy .feature-details { margin: 0 0 1.5rem; }
+    .portfolio-subheading { margin: 0; }
+    .portfolio-project-note { max-width: 70ch; }
+    .portfolio-link-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; }
+    .portfolio-link-row a { text-underline-offset: .2em; }
+    .crafting-preview { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 2rem; align-items: start; }
+    @media (max-width: 780px) {
+      .featured-projects, .crafting-preview { grid-template-columns: 1fr; }
+      .feature-media { height: 300px; }
+      .portfolio-intro { padding-top: 2.5rem; }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .feature-card { transition: transform .16s ease, box-shadow .16s ease; }
+      .feature-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px #0002; }
+    }
+  </style>
 </head>
-
 <body>
-  <a class="skip" href="#main">Skip to content</a>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="header-inner">
+  <a class="brand" href="index.html">Luna Dales<span>Engineering and Crafting Portfolio</span></a>
+  <nav aria-label="Main navigation">
+    <a href="index.html" aria-current="page">Overview</a>
+    <a href="flying-blind.html">Flying Blind</a>
+    <a href="zephyr.html">L1 Zephyr</a>
+    <a href="tvc.html">TVC platform</a>
+    <a href="whereisit.html">WhereIsIt</a>
+    <a href="crafting.html">Crafting</a>
+    <a href="about.html">About Me/Resume</a>
+  </nav>
+</div></header>
+<main id="main">
 
-  <header class="site-header">
-    <div class="header-inner">
-      <a class="brand" href="index.html">
-        Space Why?
-        <span>Luna Dales / Engineering and Crafting Portfolio</span>
+<section class="wrap portfolio-intro" aria-labelledby="portfolio-title">
+  <p class="eyebrow">Aerospace engineering · Software · Accessibility</p>
+  <h1 id="portfolio-title">I learn by building.</h1>
+  <p class="intro">I'm Luna. I like taking questions that interest me and turning them into real things I can build, test, and improve.</p>
+  <p class="portfolio-project-note">My work ranges from designing rocket flight computers to creating an iPhone app that helps people with low vision find groceries. Each project has taught me something different about making technology useful.</p>
+  <div class="featured-projects" aria-label="Featured engineering projects">
+    <article class="feature-card">
+      <a class="feature-media rocket" href="#space-why" aria-label="Explore Space Why">
+        <img src="assets/zephyr-finished.jpg" alt="Luna beside her assembled Zephyr rocket" width="900" height="1200">
       </a>
-
-      <nav aria-label="Main navigation">
-        <a href="index.html" aria-current="page">Overview</a>
-        <a href="flying-blind.html">Flying Blind</a>
-        <a href="zephyr.html">L1 Zephyr</a>
-        <a href="tvc.html">TVC platform</a>
-        <a href="whereisit.html">WhereIsIt</a>
-        <a href="crafting.html">Crafting</a>
-        <a href="about.html">About Me/Resume</a>
-      </nav>
-    </div>
-  </header>
-
-  <main id="main">
-
-    <!-- Space Why hero -->
-
-    <section class="hero wrap">
-      <div class="hero-copy">
-        <p class="eyebrow">My aerospace engineering project</p>
-        <h1>Space Why?</h1>
-
-        <p class="intro">
-          I wanted to understand how rockets control their flight.
-          So I started building them myself.
-        </p>
-
-        <p>
-          From a small payload rocket to custom circuit boards and
-          a two-axis test platform, this project is how I’m learning
-          to design, build, test, and improve.
-        </p>
-
-        <a class="button" href="#projects">Explore the project</a>
+      <div class="feature-copy">
+        <span class="eyebrow">01 / Aerospace &amp; embedded systems</span>
+        <h2>Space Why?</h2>
+        <p>I wanted to understand how rockets control their flight, so I began building rockets and flight computers, designing circuit boards, and experimenting with a two-axis test platform.</p>
+        <p class="feature-details">Custom electronics · Firmware · Mechanical design · Flight testing</p>
+        <a class="button" href="#space-why">Explore Space Why</a>
       </div>
-
-      <figure class="hero-image">
-        <img
-          src="assets/zephyr-finished.jpg"
-          alt="Luna standing beside her assembled Space Why Zephyr rocket"
-          loading="lazy"
-          width="900"
-          height="1200">
-
-        <figcaption>
-          Luna with the Zephyr, which she flew to earn her
-          Tripoli Rocketry Association (TRA) M1 certificate.
-        </figcaption>
-      </figure>
-    </section>
-
-    <!-- Engineering milestones -->
-
-    <section class="band">
-      <div class="wrap status-grid">
-
-        <div>
-          <span class="eyebrow">Electronics</span>
-          <strong>3 generations built</strong>
-          <p>V1–V3 hardware · V2 sensor recording verified</p>
-        </div>
-
-        <div>
-          <span class="eyebrow">High power rocketry</span>
-          <strong>M1 certificate earned · Flight completed</strong>
-          <p>
-            Tripoli Rocketry Association (TRA) ·
-            Under-18 counterpart to L1
-          </p>
-        </div>
-
-        <div>
-          <span class="eyebrow">Mechanical iteration</span>
-          <strong>2 stronger mount revisions</strong>
-          <p>Shape and thickness changed after breaking</p>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- Space Why engineering projects -->
-
-    <section class="wrap section" id="projects">
-      <div class="section-heading">
-        <p class="eyebrow">The work</p>
-        <h2>Three connected engineering stories</h2>
-      </div>
-
-      <div class="project-grid">
-
-        <a class="project" href="flying-blind.html">
-          <img
-            src="assets/v3-detail2.jpg"
-            alt="Custom Flying Blind V3 PCB before component assembly"
-            width="900"
-            height="1200">
-
-          <div>
-            <span class="eyebrow">
-              01 / Electronics &amp; integration
-            </span>
-
-            <h3>Flying Blind</h3>
-
-            <p>
-              From breadboard to PCB, with verified V2 sensor
-              recording, Python analysis, gyro-offset correction,
-              and experimental Kalman altitude code.
-            </p>
-
-            <span class="text-link">Read more</span>
-          </div>
-        </a>
-
-        <a class="project" href="zephyr.html">
-          <img
-            src="assets/zephyr-build.jpg"
-            alt="Luna working on the Zephyr rocket"
-            width="900"
-            height="1200">
-
-          <div>
-            <span class="eyebrow">
-              02 / Construction &amp; simulation
-            </span>
-
-            <h3>L1 Zephyr</h3>
-
-            <p>
-              Epoxy construction, stability and altitude simulations,
-              and a successful Tripoli flight that earned my
-              M1 certificate.
-            </p>
-
-            <span class="text-link">Read more</span>
-          </div>
-        </a>
-
-        <a class="project" href="tvc.html">
-          <img
-            src="assets/test-platform.jpg"
-            alt="Assembled two-axis gimbal test platform on a wooden frame"
-            width="900"
-            height="1200">
-
-          <div>
-            <span class="eyebrow">
-              03 / Mechanics &amp; testing
-            </span>
-
-            <h3>The TVC test platform</h3>
-
-            <p>
-              Sketching, printing, assembling, and strengthening
-              a platform after its gimbal mounts broke.
-            </p>
-
-            <span class="text-link">Read more</span>
-          </div>
-        </a>
-
-      </div>
-    </section>
-
-    <!-- NEW: WhereIsIt software project -->
-
-    
-
-<!-- WhereIsIt iOS application -->
-
-<section class="wrap section split" id="whereisit">
-
-  <div>
-    <p class="eyebrow">
-      Software Engineering · AI · Accessibility
-    </p>
-
-    <h2>WhereIsIt</h2>
-
-    <p class="intro">
-      Making grocery shopping more accessible.
-    </p>
-
-    <p>
-      I developed an iPhone app to help people with low
-      vision find products on grocery store shelves.
-    </p>
-
-    <p>
-      WhereIsIt uses artificial intelligence to identify
-      products in crowdsourced shelf photographs. Users
-      can search for products, find their shelf locations,
-      and view photographs showing where they are.
-    </p>
-
-    <p>
-      The working prototype includes voice search,
-      spoken product locations, adjustable text sizes,
-      and VoiceOver support.
-    </p>
-
-    <p>
-      I built the app using SwiftUI, Supabase, PostgreSQL,
-      and OpenAI, combining mobile development,
-      computer vision, and accessibility engineering.
-    </p>
-
-    <a class="button" href="whereisit.html">
-      Explore WhereIsIt
-    </a>
-  </div>
-
-  <div class="prose">
-    <figure>
-      <a href="whereisit.html">
-        <img
-          src="https://raw.githubusercontent.com/luna-dales/where-is-it/main/docs/screenshots/app-home.png"
-          alt="WhereIsIt iPhone application home screen"
-          loading="lazy"
-          style="display:block;width:100%;max-width:300px;height:auto;margin:0 auto;border-radius:14px;">
+    </article>
+    <article class="feature-card">
+      <a class="feature-media app" href="whereisit.html" aria-label="Explore WhereIsIt">
+        <img src="https://raw.githubusercontent.com/luna-dales/where-is-it/main/docs/screenshots/app-home.png" alt="WhereIsIt app home screen on an iPhone" loading="lazy">
       </a>
-
-      <figcaption style="text-align:center;margin-top:12px;">
-        WhereIsIt — AI-powered grocery product locator
-      </figcaption>
-    </figure>
+      <div class="feature-copy">
+        <span class="eyebrow">02 / Mobile software &amp; accessibility</span>
+        <h2>WhereIsIt</h2>
+        <p>Finding the right item on a crowded grocery shelf can be difficult when you have low vision. I developed a working iPhone prototype that uses AI and shared shelf photographs to help locate products.</p>
+        <p class="feature-details">SwiftUI · Computer vision · Supabase · Voice accessibility</p>
+        <a class="button" href="whereisit.html">Explore WhereIsIt</a>
+      </div>
+    </article>
   </div>
-
 </section>
 
+<section class="band" aria-label="Engineering milestones"><div class="wrap status-grid">
+  <div><span class="eyebrow">Flight computing</span><strong>3 hardware generations</strong><p>V1–V3 electronics · V2 sensor recording verified</p></div>
+  <div><span class="eyebrow">High-power rocketry</span><strong>M1 certification earned</strong><p>Zephyr certification flight with Tripoli</p></div>
+  <div><span class="eyebrow">Accessible software</span><strong>Working iPhone prototype</strong><p>WhereIsIt tested on two phones with shared product locations</p></div>
+</div></section>
 
-    <!-- Where Space Why began -->
+<section class="wrap section" id="space-why">
+  <div class="section-heading"><p class="eyebrow">Space Why / The engineering work</p><h2>Three connected rocketry projects</h2></div>
+  <p class="portfolio-project-note">I started with the question of how rockets fly and steer. These projects bring together electronics, mechanical design, simulation, and experiments.</p>
+  <div class="project-grid">
+    <a class="project" href="flying-blind.html"><img src="assets/v3-detail2.jpg" alt="Custom Flying Blind V3 circuit board before component assembly" width="900" height="1200" loading="lazy"><div><span class="eyebrow">01 / Electronics &amp; integration</span><h3>Flying Blind</h3><p>From breadboard to PCB, with verified V2 sensor recording, Python analysis, gyro-offset correction, and experimental Kalman altitude code.</p><span class="text-link">Read more</span></div></a>
+    <a class="project" href="zephyr.html"><img src="assets/zephyr-build.jpg" alt="Luna working on the Zephyr rocket" width="900" height="1200" loading="lazy"><div><span class="eyebrow">02 / Construction &amp; simulation</span><h3>L1 Zephyr</h3><p>Epoxy construction, stability and altitude simulations, and a successful Tripoli flight that earned my M1 certificate.</p><span class="text-link">Read more</span></div></a>
+    <a class="project" href="tvc.html"><img src="assets/test-platform.jpg" alt="Assembled two-axis gimbal test platform" width="900" height="1200" loading="lazy"><div><span class="eyebrow">03 / Mechanics &amp; testing</span><h3>The TVC test platform</h3><p>Sketching, printing, assembling, and strengthening a platform after its gimbal mounts broke.</p><span class="text-link">Read more</span></div></a>
+  </div>
+</section>
 
-    <section class="wrap section split">
-      <div>
-        <p class="eyebrow">Where it began</p>
-        <h2>From launches to questions</h2>
-      </div>
+<section class="wrap section split">
+  <div><p class="eyebrow">Where Space Why began</p><h2>From launches to questions</h2></div>
+  <div class="prose"><p>I enjoyed building and flying rockets at Space Camp and with my family. Following SpaceX launches and watching model-rocketry videos made me curious about how rockets steer and land.</p><p>Joe Barnard's BPS.Space project inspired me to try something similar. Self-landing is my long-term inspiration. My work so far is learning the electronics, software, fabrication, and testing behind those systems.</p></div>
+</section>
 
-      <div class="prose">
-        <p>
-          I enjoyed building and flying rockets at Space Camp
-          and with my family. Following SpaceX launches and
-          watching model-rocketry videos made me curious about
-          how rockets steer and land.
-        </p>
+<section class="dark-section"><div class="wrap split">
+  <div><p class="eyebrow">An accessibility connection</p><h2>Designing for more than one way to see</h2></div>
+  <div class="prose"><p>My experience with low vision has shaped the kinds of problems I want to solve. In Space Why, I'm exploring ways to make flight data easier to read and hear. With WhereIsIt, I applied accessibility ideas to a familiar everyday task.</p><p>Both are ongoing explorations: the flight-data viewer is an early prototype, while the WhereIsIt iPhone app has a working photograph-to-search workflow. <a href="whereisit.html">See how WhereIsIt works</a>.</p></div>
+</div></section>
 
-        <p>
-          Joe Barnard’s BPS.Space project inspired me to try
-          something similar. Self-landing is my long-term
-          inspiration. My work so far is learning the
-          electronics, software, fabrication, and testing
-          behind those systems.
-        </p>
-      </div>
-    </section>
+<section class="wrap section" id="crafting">
+  <div class="section-heading"><p class="eyebrow">Beyond software and rockets</p><h2>Crafting, making, and teaching</h2></div>
+  <div class="crafting-preview"><div><p>I grew up among talented crafters, bakers, and artists. My crafting story follows baking with my grandmother, developing independence through adult classes, and now teaching younger family members.</p><a class="button" href="crafting.html">Explore my crafting</a></div><div class="prose"><h3>Things I make and share</h3><p>Crochet began as a shared interest with my sister and grew into amigurumi projects, NOAH fundraising, and teaching at summer camp. Metal jewelry making adds a progression from simple bracelets to complex wirework.</p><p>These are skills and interests I can carry through life.</p></div></div>
+</section>
 
-    <!-- Accessibility and flight data -->
+<section class="wrap section split" id="contributions">
+  <div><p class="eyebrow">Contributions &amp; support</p><h2>What I did, and how I learned</h2></div>
+  <div class="prose">
+    <p>For Space Why, I assembled electronics, laid out schematics and PCBs, wrote flight-computer software, built rockets, and ran test flights. I also printed and assembled parts for the TVC platform and revised mounts after they broke.</p>
+    <p>My dad taught me soldering, helped me learn Autodesk Fusion, and got me started on Arduino C++ Sketch programming. I learned about coding and component choices through YouTube and internet resources. BPS.Space inspired the project and designed the TVC gimbal; I downloaded its STL files, 3D printed the parts, and assembled the gimbal. My test-platform work and mount revisions are documented separately.</p>
+    <p>In WhereIsIt, I've been learning how mobile interfaces, AI recognition, databases, cloud functions, and accessibility features fit together. The prototype has been tested on two iPhones.</p>
+    <p>I used AI as a development and writing assistant for parts of the software and website, including drafting and editing text and helping with code and layout. The project descriptions are based on my work and our records.</p>
+    <p>V2 software now records separate sensor sessions, preserves raw readings, and supports repeatable analysis and gyro-offset checks. An experimental barometer-only Kalman estimator has passed software checks, with measured-height comparisons next. <a href="flying-blind.html#v2-software">Explore the V2 software progression and results</a>, with code in the <a href="https://github.com/luna-dales/space-why">project repository</a>.</p>
+  </div>
+</section>
 
-    <section class="dark-section">
-      <div class="wrap split">
-
-        <div>
-          <p class="eyebrow">A related exploration</p>
-
-          <h2>
-            Making flight data easier to read—and hear
-          </h2>
-        </div>
-
-        <div class="prose">
-          <p>
-            My experience with low vision has prompted me
-            to explore alternative colors, adjustable font
-            and image sizes, and audio feedback for simulations.
-          </p>
-
-          <p>
-            I used AI to explore interface options and create
-            a viewer prototype. This is an early design
-            exploration; further development and user
-            evaluation are future goals.
-          </p>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- Crafting -->
-
-    <section class="wrap section split" id="crafting">
-      <div>
-        <p class="eyebrow">Outside engineering</p>
-
-        <h2>Baking, crochet, and jewelry</h2>
-
-        <p>
-          I grew up among talented crafters, bakers, and artists.
-          My crafting story follows baking with my grandmother,
-          developing independence through adult classes, and
-          now teaching younger family members.
-        </p>
-
-        <a class="button" href="crafting.html">
-          Explore my crafting
-        </a>
-      </div>
-
-      <div class="prose">
-        <h3>Things I make and share</h3>
-
-        <p>
-          Crochet began as a shared interest with my sister and
-          grew into amigurumi projects, NOAH fundraising, and
-          teaching at summer camp. Metal jewelry making adds a
-          progression from simple bracelets to complex wirework.
-        </p>
-
-        <p>
-          These are skills and interests I can carry through life.
-        </p>
-      </div>
-    </section>
-
-    <!-- Contributions and support -->
-
-    <section class="wrap section split" id="contributions">
-      <div>
-        <p class="eyebrow">Contributions &amp; support</p>
-        <h2>What I did, and how I learned</h2>
-      </div>
-
-      <div class="prose">
-        <p>
-          I assembled the electronics, laid out the schematic
-          and PCB, wrote the flight-computer software, built
-          the rockets, and ran the test flights. I also worked
-          on the TVC test platform, printed and assembled parts,
-          and revised mounts after they broke.
-        </p>
-
-        <p>
-          My dad taught me soldering, helped me learn Autodesk
-          Fusion, and got me started on Arduino C++ Sketch
-          programming. I learned about coding and component
-          choices through YouTube and internet resources.
-          BPS.Space inspired the project and designed the
-          TVC gimbal. I downloaded its STL files, 3D printed
-          the parts, and assembled the gimbal. My test-platform
-          work and mount revisions are documented separately.
-        </p>
-
-        <p>
-          This website was developed with help from AI for
-          drafting and editing text, writing website code,
-          and arranging the layout. The project descriptions
-          are based on my work and our records.
-        </p>
-
-        <p>
-          V2 software now records separate sensor sessions,
-          preserves raw readings, and supports repeatable
-          analysis and gyro-offset checks. An experimental
-          barometer-only Kalman estimator has passed software
-          checks, with measured-height comparisons next.
-
-          <a href="flying-blind.html#v2-software">
-            Explore the V2 software progression and results
-          </a>,
-
-          with code in the
-
-          <a href="https://github.com/luna-dales/space-why">
-            project repository
-          </a>.
-        </p>
-      </div>
-    </section>
-
-    <!-- Next experiments -->
-
-    <section class="wrap next">
-      <p class="eyebrow">Next experiments</p>
-
-      <h2>Validate the measurements. Build toward control.</h2>
-
-      <p>
-        Next steps for Flying Blind are calibration, reliable
-        recording, and altitude-estimation tests against measured
-        heights. The proven V2 software will then move to V3’s PCB.
-        A future Green Egg flight needs verified logging before
-        launch; TVC control and an instrumented firing remain
-        development goals. I completed the Zephyr certification
-        flight with Tripoli and earned my M1 certificate.
-      </p>
-    </section>
-
-  </main>
-
-  <!-- Footer -->
-
-  <footer>
-    <div>
-      <strong>Space Why?</strong>
-      <p>Luna Dales / Aerospace engineering</p>
-    </div>
-
-    <div>
-      <a href="https://github.com/luna-dales/space-why">
-        Project repository
-      </a>
-
-      <p>Flying Blind update: November 1, 2026</p>
-
-      <p>
-        Website developed with help from AI for writing,
-        coding, and layout.
-      </p>
-    </div>
-  </footer>
-
+<section class="wrap next"><p class="eyebrow">What comes next</p><h2>Keep testing. Keep improving.</h2><p>For Space Why, I'm working toward better sensor calibration, altitude estimation, and future control experiments. For WhereIsIt, the next challenges include improving product-position accuracy, refining accessibility, and testing the app more broadly.</p><div class="portfolio-link-row"><a href="flying-blind.html">Flying Blind progress</a><a href="whereisit.html#next-steps">WhereIsIt next steps</a></div></section>
+</main>
+<footer><div><strong>Luna Dales</strong><p>Engineering and Crafting Portfolio</p></div><div><a href="https://github.com/luna-dales/space-why">Space Why repository</a><p><a href="https://github.com/luna-dales/where-is-it">WhereIsIt repository</a></p><p>Website developed with help from AI for writing, coding, and layout.</p></div></footer>
 </body>
 </html>
