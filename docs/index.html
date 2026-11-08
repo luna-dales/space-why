@@ -38,7 +38,7 @@
         <a href="flying-blind.html">Flying Blind</a>
         <a href="zephyr.html">L1 Zephyr</a>
         <a href="tvc.html">TVC platform</a>
-        <a href="index.html#whereisit">WhereIsIt</a>
+        <a href="whereisit.html">WhereIsIt</a>
         <a href="crafting.html">Crafting</a>
         <a href="about.html">About Me/Resume</a>
       </nav>
@@ -200,103 +200,67 @@
 
     
 
-<section class="wrap section" id="whereisit">
-  <div class="section-heading">
+<!-- WhereIsIt iOS application -->
+
+<section class="wrap section split" id="whereisit">
+
+  <div>
     <p class="eyebrow">
-      Software engineering · AI · Accessibility
+      Software Engineering · AI · Accessibility
     </p>
-    <h2>WhereIsIt — An Accessible Grocery Locator</h2>
-  </div>
 
-  <div class="wi-home-feature">
-    <div class="wi-home-copy">
-      <h3>Finding groceries with AI</h3>
+    <h2>WhereIsIt</h2>
 
-      <p>
-        I developed an iPhone app to help people with
-        low vision locate products in grocery stores.
-        WhereIsIt uses AI to identify products in
-        crowdsourced shelf photographs and makes
-        their locations searchable by other shoppers.
-      </p>
+    <p class="intro">
+      Making grocery shopping more accessible.
+    </p>
 
-      <p>
-        The working prototype includes voice search,
-        spoken product locations, adjustable text sizes,
-        and VoiceOver support.
-      </p>
+    <p>
+      I developed an iPhone app to help people with low
+      vision find products on grocery store shelves.
+    </p>
 
-      <a class="button" href="whereisit.html">
-        Explore WhereIsIt
-      </a>
-    </div>
+    <p>
+      WhereIsIt uses artificial intelligence to identify
+      products in crowdsourced shelf photographs. Users
+      can search for products, find their shelf locations,
+      and view photographs showing where they are.
+    </p>
 
-    <a class="wi-home-image" href="whereisit.html">
-      <img
-        src="https://raw.githubusercontent.com/luna-dales/where-is-it/main/docs/screenshots/app-home.png"
-        alt="WhereIsIt accessible grocery locator home screen"
-        loading="lazy">
+    <p>
+      The working prototype includes voice search,
+      spoken product locations, adjustable text sizes,
+      and VoiceOver support.
+    </p>
+
+    <p>
+      I built the app using SwiftUI, Supabase, PostgreSQL,
+      and OpenAI, combining mobile development,
+      computer vision, and accessibility engineering.
+    </p>
+
+    <a class="button" href="whereisit.html">
+      Explore WhereIsIt
     </a>
   </div>
+
+  <div class="prose">
+    <figure>
+      <a href="whereisit.html">
+        <img
+          src="https://raw.githubusercontent.com/luna-dales/where-is-it/main/docs/screenshots/app-home.png"
+          alt="WhereIsIt iPhone application home screen"
+          loading="lazy"
+          style="display:block;width:100%;max-width:300px;height:auto;margin:0 auto;border-radius:14px;">
+      </a>
+
+      <figcaption style="text-align:center;margin-top:12px;">
+        WhereIsIt — AI-powered grocery product locator
+      </figcaption>
+    </figure>
+  </div>
+
 </section>
-```
-
-In the homepage navigation, change the WhereIsIt link from:
-
-```html
-<a href="index.html#whereisit">WhereIsIt</a>
-```
-
-to:
-
-```html
-<a href="whereisit.html">WhereIsIt</a>
-```
-
-## 3. Add the homepage styling
-
-At the bottom of `docs/style.css`, add:
-
-<CodeBlock language="css" editable>
-/* WhereIsIt homepage preview */
-
-.wi-home-feature {
-  display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
-  gap: 3rem;
-  align-items: center;
-}
-
-.wi-home-copy {
-  min-width: 0;
-}
-
-.wi-home-copy p {
-  line-height: 1.75;
-  margin-bottom: 1.2rem;
-}
-
-.wi-home-image {
-  display: block;
-  text-align: center;
-}
-
-.wi-home-image img {
-  display: block;
-  width: 100%;
-  max-width: 270px;
-  height: auto;
-  margin-inline: auto;
-  border-radius: 14px;
-  border: 1px solid #9996;
-}
-
-@media (max-width: 800px) {
-  .wi-home-feature {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-}
 
 
     <!-- Where Space Why began -->
