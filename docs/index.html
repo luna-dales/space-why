@@ -26,10 +26,7 @@
     .feature-media { display: block; position: relative; background: #20272a; height: clamp(230px,30vw,360px); overflow: hidden; }
     .feature-media > img { display: block; width: 100%; height: 100%; object-fit: cover; }
     .feature-media.rocket > img { object-position: center 32%; }
-    .feature-media.craft { background: linear-gradient(135deg,#41343e,#756459); display: flex; align-items: center; justify-content: center; padding: 1.4rem; }
-    .craft-art { color: #fff9ed; width: 100%; max-width: 330px; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .6rem; transform: rotate(-3deg); }
-    .craft-art span { display: flex; align-items: center; justify-content: center; text-align: center; min-height: 96px; padding: 1rem; border: 1px solid #fff7; border-radius: 15px; font-family: Georgia, serif; font-size: clamp(1.1rem,2.2vw,1.65rem); background: #ffffff13; }
-    .craft-art span:last-child { grid-column: 1 / -1; min-height: 78px; }
+    .feature-media.craft > img { object-position: center center; }
     .feature-media.app { display: flex; justify-content: center; align-items: center; background: linear-gradient(130deg,#19374b,#466a70); }
     .feature-media.app img { width: auto; max-width: 80%; height: 90%; object-fit: contain; border-radius: 10px; }
     .feature-copy { padding: clamp(1.25rem,3vw,2rem); flex: 1; display: flex; flex-direction: column; align-items: start; }
@@ -101,7 +98,7 @@
     </article>
     <article class="feature-card">
       <a class="feature-media craft" href="crafting.html" aria-label="Explore Luna's crafting work">
-        <div class="craft-art" aria-hidden="true"><span>Crochet</span><span>Jewelry</span><span>Baking &amp; sharing</span></div>
+        <img src="assets/crafting-feature.png" alt="Illustrative arrangement of glazed flower cookies, a purple crocheted octopus, and silver butterfly wire jewelry inspired by Luna’s projects" loading="lazy" width="1147" height="1536">
       </a>
       <div class="feature-copy">
         <span class="eyebrow">03 / Craftsmanship &amp; teaching</span>
