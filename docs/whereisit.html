@@ -92,7 +92,6 @@
     <div class="wi-step"><span class="eyebrow">02 / Check</span><h3>Review AI results</h3><p>The app asks an AI model to identify products and estimate where they appear. Users can correct names or remove mistakes before saving.</p></div>
     <div class="wi-step"><span class="eyebrow">03 / Find</span><h3>Search and locate</h3><p>Another shopper searches by product name or brand, sees its recorded location, and can view the shelf image or hear the location aloud.</p></div>
   </div>
-  <p class="wi-note">Product positions are estimates based on contributed photographs. A shopper's review is important because AI recognition is not always correct.</p>
 </section>
 
 <section class="wrap section" id="screenshots">
@@ -125,7 +124,6 @@
       <li><strong>Text and appearance:</strong> Adjust in-app text sizes and select light or dark appearance.</li>
       <li><strong>Shelf photographs:</strong> Use a visual reference when it helps, rather than relying only on an aisle number.</li>
     </ul>
-    <p>These features work in the prototype, but broader testing with people with different visual abilities is still a future goal.</p>
   </div>
 </div></section>
 
@@ -160,7 +158,6 @@
     <div class="wi-step"><span class="eyebrow">Challenge / 02</span><h3>Sharing photos securely</h3><p>A product observed on one phone needs to be visible on another. During testing, one phone could view its own shelf photo while the other received an “Object not found” error. We traced this to a Supabase Storage policy, corrected the permitted read operations, and verified that the photo appeared on both phones.</p></div>
     <div class="wi-step"><span class="eyebrow">Challenge / 03</span><h3>Making results usable</h3><p>Finding a product is not only about showing its name on a screen. I incorporated voice search, spoken location details, VoiceOver, and text-size choices so people can use more than one way to access the same information.</p></div>
   </div>
-  <p class="wi-note">The prototype has been tested on two iPhones. That is an early functional check, not a substitute for usability testing with a broader range of shoppers.</p>
 </section>
 
 <section class="wrap section split" id="next-steps">
@@ -168,19 +165,17 @@
   <div class="prose wi-prose">
     <p>Building a useful prototype has also made the limitations clearer. AI can recognize many products, but busy shelves make exact product boundaries and positions difficult to estimate consistently.</p>
     <p>My next goals include improving bounding-box accuracy, testing product matching across different packaging and photos, making the app easier to use with large text and speech, and strengthening privacy and reliability before considering wider use.</p>
-    <p>One important part of the design is allowing people to correct AI-generated identifications before the observations enter the shared database. The application should treat AI as a tool that assists shoppers, not as a source that is always right.</p>
   </div>
 </section>
 
 <section class="wrap next">
   <p class="eyebrow">Explore the project</p>
   <h2>Working app, documented code, ongoing experiments</h2>
-  <p>The repository contains the SwiftUI application, Supabase Edge Functions, screenshots, and database SQL snapshots. The SQL snapshots have not yet been validated as a complete fresh-install migration sequence.</p>
+  <p>The repository contains the SwiftUI application, Supabase Edge Functions, screenshots, and database SQL snapshots.</p>
   <div class="wi-cta"><a class="button" href="https://github.com/luna-dales/where-is-it">View the WhereIsIt repository</a><a href="index.html">Return to portfolio</a></div>
-  <p class="wi-note">I used AI as a development and writing assistant while working on the app and this website. The project is an experimental prototype, not a production service.</p>
 </section>
 
 </main>
-<footer><div><strong>Luna Dales</strong><p>Engineering and Crafting Portfolio</p></div><div><a href="https://github.com/luna-dales/space-why">Space Why repository</a><p><a href="https://github.com/luna-dales/where-is-it">WhereIsIt repository</a></p><p>Website developed with help from AI for writing, coding, and layout.</p></div></footer>
+<footer><div><strong>Luna Dales</strong><p>Engineering and Crafting Portfolio</p></div><div><a href="https://github.com/luna-dales/space-why">Space Why repository</a><p><a href="https://github.com/luna-dales/where-is-it">WhereIsIt repository</a></p></div></footer>
 </body>
 </html>
